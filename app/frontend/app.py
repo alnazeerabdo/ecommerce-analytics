@@ -606,7 +606,7 @@ if "ai_insights" in st.session_state:
     result = st.session_state["ai_insights"]
 
     # Show source badge
-    source_label = "🤖 HuggingFace AI" if result["source"] == "huggingface" else "📊 Built-in Engine"
+    source_label = "🤖 Google Gemini AI" if result["source"] == "gemini" else "📊 Built-in Engine"
     st.caption(f"Powered by: **{result['model_used']}** ({source_label})")
 
     st.markdown(f"""

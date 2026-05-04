@@ -1,5 +1,5 @@
 """
-AI Insights Module — HuggingFace API + smart rule-based fallback.
+AI Insights Module — Google Gemini API + smart rule-based fallback.
 """
 
 import os
@@ -9,32 +9,57 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """You are an expert e-commerce business analyst with 15 years of experience.
-Given an analytics summary, provide:
+Given an analytics summary, provide a structured analysis:
 
-1. **KEY INSIGHTS** (3-5 bullet points) — What's working well, patterns, standout metrics
-2. **PROBLEMS DETECTED** (3-5 bullet points) — Revenue risks, retention issues, underperformance
-3. **ACTION PLAN TO INCREASE REVENUE** (5-7 steps) — Specific, measurable, prioritized
+1. **💡 KEY INSIGHTS** (3-5 bullet points) — What's working well, patterns, standout metrics
+2. **⚠️ PROBLEMS DETECTED** (3-5 bullet points) — Revenue risks, retention issues, underperformance
+3. **🚀 ACTION PLAN TO INCREASE REVENUE** (5-7 steps) — Specific, measurable, prioritized with HIGH/MEDIUM/LOW
 
-Be specific with numbers. Reference the actual data. Professional but accessible tone."""
+Be specific with numbers. Reference the actual data. Professional but accessible tone.
+Use markdown formatting with bold text and bullet points."""
 
 
-def _generate_with_huggingface(summary_text: str, hf_token: str) -> Optional[str]:
-    """Call HuggingFace Inference API."""
+def _get_google_api_key() -> str:
+    """Get Google API key from Streamlit secrets or environment."""
+    # Try Streamlit secrets first (for cloud deployment)
     try:
-        from huggingface_hub import InferenceClient
-        client = InferenceClient(
-            model="Qwen/Qwen2.5-72B-Instruct",
-            token=hf_token,
-            timeout=60,
+        import streamlit as st
+        key = st.secrets.get("google", {}).get("api_key", "")
+        if key:
+            return key
+    except Exception:
+        pass
+    # Fall back to env var
+    return os.getenv("GOOGLE_API_KEY", "")
+
+
+def _generate_with_gemini(summary_text: str, api_key: str) -> Optional[str]:
+    """Call Google Gemini API for AI insights."""
+    try:
+        import google.generativeai as genai
+
+        genai.configure(api_key=api_key)
+
+        model = genai.GenerativeModel(
+            model_name="gemini-2.0-flash",
+            system_instruction=SYSTEM_PROMPT,
         )
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"Analyze this e-commerce data:\n\n{summary_text}"},
-        ]
-        response = client.chat_completion(messages=messages, max_tokens=1500, temperature=0.7)
-        return response.choices[0].message.content
+
+        response = model.generate_content(
+            f"Analyze this e-commerce data and provide actionable insights:\n\n{summary_text}",
+            generation_config=genai.types.GenerationConfig(
+                max_output_tokens=1500,
+                temperature=0.7,
+            ),
+        )
+
+        return response.text
+
+    except ImportError:
+        logger.warning("google-generativeai not installed. Falling back to built-in analysis.")
+        return None
     except Exception as e:
-        logger.error(f"HuggingFace API error: {e}")
+        logger.error(f"Google Gemini API error: {e}")
         return None
 
 
@@ -123,28 +148,23 @@ def _generate_fallback_insights(analytics: dict) -> str:
 
 
 def generate_insights(analytics: dict, summary_text: str) -> dict:
-    """Generate insights — HuggingFace first, fallback to rule-based."""
-    # Try Streamlit secrets first, then env vars
-    hf_token = ""
-    try:
-        import streamlit as st
-        hf_token = st.secrets.get("huggingface", {}).get("api_token", "")
-    except Exception:
-        pass
-    if not hf_token:
-        hf_token = os.getenv("HF_API_TOKEN", "")
+    """Generate insights — Google Gemini first, fallback to rule-based."""
+    api_key = _get_google_api_key()
 
     insights_text = None
     model_used = None
     source = "fallback"
 
-    if hf_token and hf_token != "hf_your_token_here":
-        insights_text = _generate_with_huggingface(summary_text, hf_token)
+    if api_key and api_key != "your_google_api_key_here":
+        logger.info("Calling Google Gemini API...")
+        insights_text = _generate_with_gemini(summary_text, api_key)
         if insights_text:
-            model_used = "Qwen/Qwen2.5-72B-Instruct"
-            source = "huggingface"
+            model_used = "Google Gemini 2.0 Flash"
+            source = "gemini"
+            logger.info("Successfully generated AI insights via Gemini.")
 
     if not insights_text:
+        logger.info("Using built-in rule-based analysis engine.")
         insights_text = _generate_fallback_insights(analytics)
         model_used = "Built-in Analytics Engine"
         source = "builtin"
