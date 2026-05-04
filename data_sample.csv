@@ -1,0 +1,151 @@
+order_id,order_date,customer_id,customer_name,product_name,category,quantity,unit_price,total_price,region
+ORD001,2024-01-05,C001,Alice Johnson,Wireless Headphones,Electronics,2,49.99,99.98,North
+ORD002,2024-01-07,C002,Bob Smith,Running Shoes,Footwear,1,89.99,89.99,South
+ORD003,2024-01-10,C003,Carol Williams,Yoga Mat,Fitness,3,29.99,89.97,East
+ORD004,2024-01-12,C001,Alice Johnson,Phone Case,Electronics,1,19.99,19.99,North
+ORD005,2024-01-15,C004,David Brown,Coffee Maker,Home & Kitchen,1,79.99,79.99,West
+ORD006,2024-01-18,C005,Eva Martinez,Bluetooth Speaker,Electronics,2,39.99,79.98,South
+ORD007,2024-01-20,C002,Bob Smith,Water Bottle,Fitness,4,14.99,59.96,South
+ORD008,2024-01-22,C006,Frank Lee,Desk Lamp,Home & Kitchen,1,34.99,34.99,East
+ORD009,2024-01-25,C003,Carol Williams,Resistance Bands,Fitness,2,24.99,49.98,East
+ORD010,2024-01-28,C007,Grace Kim,Laptop Stand,Electronics,1,59.99,59.99,North
+ORD011,2024-02-01,C008,Henry Davis,Trail Boots,Footwear,1,119.99,119.99,West
+ORD012,2024-02-03,C001,Alice Johnson,USB-C Hub,Electronics,1,29.99,29.99,North
+ORD013,2024-02-05,C009,Iris Wilson,Blender,Home & Kitchen,1,49.99,49.99,South
+ORD014,2024-02-08,C004,David Brown,Air Purifier,Home & Kitchen,1,129.99,129.99,West
+ORD015,2024-02-10,C010,Jack Taylor,Smart Watch,Electronics,1,199.99,199.99,East
+ORD016,2024-02-12,C002,Bob Smith,Gym Bag,Fitness,1,39.99,39.99,South
+ORD017,2024-02-15,C011,Karen Moore,Throw Blanket,Home & Kitchen,2,44.99,89.98,North
+ORD018,2024-02-18,C005,Eva Martinez,Earbuds Pro,Electronics,1,69.99,69.99,South
+ORD019,2024-02-20,C003,Carol Williams,Foam Roller,Fitness,1,19.99,19.99,East
+ORD020,2024-02-22,C012,Leo Harris,Espresso Machine,Home & Kitchen,1,249.99,249.99,West
+ORD021,2024-02-25,C006,Frank Lee,Monitor Arm,Electronics,1,44.99,44.99,East
+ORD022,2024-02-28,C013,Mia Clark,Hiking Backpack,Fitness,1,79.99,79.99,North
+ORD023,2024-03-02,C007,Grace Kim,Mechanical Keyboard,Electronics,1,89.99,89.99,North
+ORD024,2024-03-05,C014,Noah Lewis,Sandals,Footwear,2,34.99,69.98,South
+ORD025,2024-03-07,C001,Alice Johnson,Webcam HD,Electronics,1,54.99,54.99,North
+ORD026,2024-03-10,C008,Henry Davis,Winter Jacket,Footwear,1,149.99,149.99,West
+ORD027,2024-03-12,C015,Olivia Walker,Candle Set,Home & Kitchen,3,19.99,59.97,East
+ORD028,2024-03-15,C009,Iris Wilson,Toaster Oven,Home & Kitchen,1,69.99,69.99,South
+ORD029,2024-03-17,C010,Jack Taylor,Fitness Tracker,Electronics,1,79.99,79.99,East
+ORD030,2024-03-20,C016,Peter Allen,Basketball,Fitness,2,29.99,59.98,West
+ORD031,2024-03-22,C004,David Brown,Slow Cooker,Home & Kitchen,1,59.99,59.99,West
+ORD032,2024-03-25,C011,Karen Moore,Table Runner,Home & Kitchen,1,24.99,24.99,North
+ORD033,2024-03-27,C002,Bob Smith,Climbing Shoes,Footwear,1,99.99,99.99,South
+ORD034,2024-03-30,C017,Quinn Young,Portable Charger,Electronics,2,34.99,69.98,East
+ORD035,2024-04-02,C012,Leo Harris,French Press,Home & Kitchen,1,29.99,29.99,West
+ORD036,2024-04-05,C005,Eva Martinez,Noise Cancelling Headset,Electronics,1,149.99,149.99,South
+ORD037,2024-04-07,C018,Rachel King,Jump Rope,Fitness,3,12.99,38.97,North
+ORD038,2024-04-10,C013,Mia Clark,Trekking Poles,Fitness,1,54.99,54.99,North
+ORD039,2024-04-12,C003,Carol Williams,Dumbbells Set,Fitness,1,89.99,89.99,East
+ORD040,2024-04-15,C019,Sam Wright,Gaming Mouse,Electronics,1,64.99,64.99,South
+ORD041,2024-04-17,C014,Noah Lewis,Flip Flops,Footwear,2,19.99,39.98,South
+ORD042,2024-04-20,C006,Frank Lee,Standing Desk Mat,Home & Kitchen,1,39.99,39.99,East
+ORD043,2024-04-22,C020,Tina Scott,Electric Kettle,Home & Kitchen,1,44.99,44.99,West
+ORD044,2024-04-25,C007,Grace Kim,Webcam Light,Electronics,1,24.99,24.99,North
+ORD045,2024-04-27,C015,Olivia Walker,Scented Diffuser,Home & Kitchen,2,34.99,69.98,East
+ORD046,2024-04-30,C001,Alice Johnson,Wireless Mouse,Electronics,1,29.99,29.99,North
+ORD047,2024-05-02,C016,Peter Allen,Yoga Block Set,Fitness,2,16.99,33.98,West
+ORD048,2024-05-05,C008,Henry Davis,Dress Shoes,Footwear,1,129.99,129.99,West
+ORD049,2024-05-07,C021,Uma Patel,Rice Cooker,Home & Kitchen,1,89.99,89.99,South
+ORD050,2024-05-10,C009,Iris Wilson,Immersion Blender,Home & Kitchen,1,39.99,39.99,South
+ORD051,2024-05-12,C022,Victor Chen,USB Microphone,Electronics,1,74.99,74.99,East
+ORD052,2024-05-15,C010,Jack Taylor,Smart Scale,Electronics,1,49.99,49.99,East
+ORD053,2024-05-17,C017,Quinn Young,Power Bank XL,Electronics,1,44.99,44.99,East
+ORD054,2024-05-20,C023,Wendy Flores,Comforter Set,Home & Kitchen,1,159.99,159.99,North
+ORD055,2024-05-22,C011,Karen Moore,Picture Frames,Home & Kitchen,4,12.99,51.96,North
+ORD056,2024-05-25,C004,David Brown,Cast Iron Skillet,Home & Kitchen,1,34.99,34.99,West
+ORD057,2024-05-27,C024,Xander Ruiz,Skateboard,Fitness,1,69.99,69.99,South
+ORD058,2024-05-30,C013,Mia Clark,Daypack,Fitness,1,44.99,44.99,North
+ORD059,2024-06-01,C002,Bob Smith,Sport Sneakers,Footwear,1,79.99,79.99,South
+ORD060,2024-06-03,C025,Yara Nguyen,Wireless Charger,Electronics,2,24.99,49.98,West
+ORD061,2024-06-05,C005,Eva Martinez,Tablet Stand,Electronics,1,22.99,22.99,South
+ORD062,2024-06-08,C019,Sam Wright,RGB Keyboard,Electronics,1,109.99,109.99,South
+ORD063,2024-06-10,C026,Zane Cooper,Pressure Cooker,Home & Kitchen,1,89.99,89.99,East
+ORD064,2024-06-12,C015,Olivia Walker,Essential Oils Kit,Home & Kitchen,1,29.99,29.99,East
+ORD065,2024-06-15,C012,Leo Harris,Waffle Maker,Home & Kitchen,1,39.99,39.99,West
+ORD066,2024-06-17,C003,Carol Williams,Kettlebell,Fitness,1,49.99,49.99,East
+ORD067,2024-06-20,C020,Tina Scott,Knife Set,Home & Kitchen,1,79.99,79.99,West
+ORD068,2024-06-22,C027,Amy Baker,Running Jacket,Footwear,1,69.99,69.99,North
+ORD069,2024-06-25,C007,Grace Kim,HDMI Cable Pack,Electronics,3,9.99,29.97,North
+ORD070,2024-06-27,C028,Ben Garcia,Pull-Up Bar,Fitness,1,34.99,34.99,South
+ORD071,2024-07-01,C014,Noah Lewis,Canvas Sneakers,Footwear,1,44.99,44.99,South
+ORD072,2024-07-03,C029,Chloe Diaz,Robot Vacuum,Home & Kitchen,1,299.99,299.99,West
+ORD073,2024-07-05,C001,Alice Johnson,Streaming Mic,Electronics,1,89.99,89.99,North
+ORD074,2024-07-08,C016,Peter Allen,Ab Roller,Fitness,2,19.99,39.98,West
+ORD075,2024-07-10,C030,Dylan Reed,Camping Hammock,Fitness,1,59.99,59.99,East
+ORD076,2024-07-12,C006,Frank Lee,Bookshelf Speakers,Electronics,1,129.99,129.99,East
+ORD077,2024-07-15,C021,Uma Patel,Food Processor,Home & Kitchen,1,119.99,119.99,South
+ORD078,2024-07-17,C008,Henry Davis,Leather Boots,Footwear,1,179.99,179.99,West
+ORD079,2024-07-20,C022,Victor Chen,Webcam Ring Light,Electronics,1,34.99,34.99,East
+ORD080,2024-07-22,C018,Rachel King,Speed Rope,Fitness,2,17.99,35.98,North
+ORD081,2024-07-25,C031,Elena Morales,Silk Pillowcase Set,Home & Kitchen,2,39.99,79.98,South
+ORD082,2024-07-27,C009,Iris Wilson,Panini Press,Home & Kitchen,1,54.99,54.99,South
+ORD083,2024-07-30,C023,Wendy Flores,Wall Art Canvas,Home & Kitchen,1,49.99,49.99,North
+ORD084,2024-08-01,C032,Felix Tran,Trail Running Shoes,Footwear,1,109.99,109.99,East
+ORD085,2024-08-03,C010,Jack Taylor,VR Headset,Electronics,1,249.99,249.99,East
+ORD086,2024-08-05,C024,Xander Ruiz,Boxing Gloves,Fitness,1,44.99,44.99,South
+ORD087,2024-08-08,C004,David Brown,Sandwich Maker,Home & Kitchen,1,29.99,29.99,West
+ORD088,2024-08-10,C033,Gina Park,Desk Organizer,Home & Kitchen,1,22.99,22.99,North
+ORD089,2024-08-12,C025,Yara Nguyen,Smart Plug Pack,Electronics,3,14.99,44.97,West
+ORD090,2024-08-15,C011,Karen Moore,Ceramic Vase,Home & Kitchen,1,34.99,34.99,North
+ORD091,2024-08-17,C034,Hector Romero,Swim Goggles,Fitness,2,15.99,31.98,South
+ORD092,2024-08-20,C013,Mia Clark,Insulated Tumbler,Fitness,3,18.99,56.97,North
+ORD093,2024-08-22,C026,Zane Cooper,Sous Vide Machine,Home & Kitchen,1,99.99,99.99,East
+ORD094,2024-08-25,C005,Eva Martinez,Power Strip Tower,Electronics,1,39.99,39.99,South
+ORD095,2024-08-27,C035,Ingrid Santos,Weighted Vest,Fitness,1,64.99,64.99,West
+ORD096,2024-08-30,C019,Sam Wright,Monitor Light Bar,Electronics,1,54.99,54.99,South
+ORD097,2024-09-01,C027,Amy Baker,Ankle Boots,Footwear,1,89.99,89.99,North
+ORD098,2024-09-03,C036,Jake Murphy,Dumbbell Rack,Fitness,1,79.99,79.99,East
+ORD099,2024-09-05,C014,Noah Lewis,Loafers,Footwear,1,64.99,64.99,South
+ORD100,2024-09-08,C029,Chloe Diaz,Air Fryer,Home & Kitchen,1,89.99,89.99,West
+ORD101,2024-09-10,C007,Grace Kim,Cable Management Kit,Electronics,2,16.99,33.98,North
+ORD102,2024-09-12,C037,Luna Vasquez,Meditation Cushion,Fitness,1,39.99,39.99,South
+ORD103,2024-09-15,C020,Tina Scott,Dutch Oven,Home & Kitchen,1,69.99,69.99,West
+ORD104,2024-09-17,C030,Dylan Reed,Climbing Chalk Bag,Fitness,1,14.99,14.99,East
+ORD105,2024-09-20,C001,Alice Johnson,Webcam Tripod,Electronics,1,19.99,19.99,North
+ORD106,2024-09-22,C038,Maya Bell,Shower Speaker,Electronics,1,29.99,29.99,West
+ORD107,2024-09-25,C012,Leo Harris,Bread Maker,Home & Kitchen,1,109.99,109.99,West
+ORD108,2024-09-27,C028,Ben Garcia,Suspension Trainer,Fitness,1,54.99,54.99,South
+ORD109,2024-09-30,C031,Elena Morales,Heated Blanket,Home & Kitchen,1,59.99,59.99,South
+ORD110,2024-10-02,C003,Carol Williams,Adjustable Dumbbells,Fitness,1,149.99,149.99,East
+ORD111,2024-10-05,C039,Oscar Hoffman,Work Boots,Footwear,1,139.99,139.99,North
+ORD112,2024-10-07,C016,Peter Allen,Exercise Ball,Fitness,1,24.99,24.99,West
+ORD113,2024-10-10,C032,Felix Tran,Cross Training Shoes,Footwear,1,94.99,94.99,East
+ORD114,2024-10-12,C040,Pia Jensen,Aromatherapy Set,Home & Kitchen,1,44.99,44.99,North
+ORD115,2024-10-15,C006,Frank Lee,Portable Projector,Electronics,1,179.99,179.99,East
+ORD116,2024-10-17,C021,Uma Patel,Stand Mixer,Home & Kitchen,1,199.99,199.99,South
+ORD117,2024-10-20,C033,Gina Park,Floating Shelves,Home & Kitchen,2,29.99,59.98,North
+ORD118,2024-10-22,C002,Bob Smith,Hiking Boots,Footwear,1,159.99,159.99,South
+ORD119,2024-10-25,C034,Hector Romero,Swim Cap Set,Fitness,3,8.99,26.97,South
+ORD120,2024-10-27,C017,Quinn Young,Action Camera,Electronics,1,199.99,199.99,East
+ORD121,2024-10-30,C022,Victor Chen,Studio Headphones,Electronics,1,149.99,149.99,East
+ORD122,2024-11-01,C035,Ingrid Santos,Rowing Machine Band,Fitness,1,29.99,29.99,West
+ORD123,2024-11-03,C008,Henry Davis,Chelsea Boots,Footwear,1,119.99,119.99,West
+ORD124,2024-11-05,C041,Ray Thomas,Electric Griddle,Home & Kitchen,1,49.99,49.99,South
+ORD125,2024-11-08,C015,Olivia Walker,Herb Garden Kit,Home & Kitchen,1,34.99,34.99,East
+ORD126,2024-11-10,C036,Jake Murphy,Battle Ropes,Fitness,1,69.99,69.99,East
+ORD127,2024-11-12,C009,Iris Wilson,Juicer,Home & Kitchen,1,79.99,79.99,South
+ORD128,2024-11-15,C042,Stella Price,Smart Thermostat,Electronics,1,129.99,129.99,North
+ORD129,2024-11-17,C023,Wendy Flores,Accent Pillows,Home & Kitchen,3,24.99,74.97,North
+ORD130,2024-11-20,C004,David Brown,Portable Heater,Home & Kitchen,1,59.99,59.99,West
+ORD131,2024-11-22,C037,Luna Vasquez,Yoga Wheel,Fitness,1,34.99,34.99,South
+ORD132,2024-11-25,C010,Jack Taylor,Drone Mini,Electronics,1,299.99,299.99,East
+ORD133,2024-11-27,C038,Maya Bell,Shower Head Filter,Home & Kitchen,1,29.99,29.99,West
+ORD134,2024-11-30,C043,Todd Evans,Weightlifting Belt,Fitness,1,39.99,39.99,North
+ORD135,2024-12-02,C019,Sam Wright,Ergonomic Mouse,Electronics,1,59.99,59.99,South
+ORD136,2024-12-05,C027,Amy Baker,Snow Boots,Footwear,1,99.99,99.99,North
+ORD137,2024-12-07,C011,Karen Moore,Holiday Wreath,Home & Kitchen,1,39.99,39.99,North
+ORD138,2024-12-10,C039,Oscar Hoffman,Steel Toe Boots,Footwear,1,109.99,109.99,North
+ORD139,2024-12-12,C024,Xander Ruiz,Inline Skates,Fitness,1,89.99,89.99,South
+ORD140,2024-12-15,C044,Ursula James,Coffee Grinder,Home & Kitchen,1,44.99,44.99,West
+ORD141,2024-12-17,C005,Eva Martinez,Smart Display,Electronics,1,89.99,89.99,South
+ORD142,2024-12-20,C029,Chloe Diaz,Instant Pot,Home & Kitchen,1,99.99,99.99,West
+ORD143,2024-12-22,C040,Pia Jensen,Candle Warmer,Home & Kitchen,1,19.99,19.99,North
+ORD144,2024-12-25,C013,Mia Clark,Ski Poles,Fitness,1,59.99,59.99,North
+ORD145,2024-12-27,C030,Dylan Reed,Rock Climbing Harness,Fitness,1,74.99,74.99,East
+ORD146,2024-12-28,C045,Vera Long,Fleece Pullover,Footwear,1,54.99,54.99,South
+ORD147,2024-12-29,C020,Tina Scott,Cutting Board Set,Home & Kitchen,1,34.99,34.99,West
+ORD148,2024-12-30,C007,Grace Kim,Docking Station,Electronics,1,69.99,69.99,North
+ORD149,2024-12-30,C026,Zane Cooper,Slow Juicer,Home & Kitchen,1,149.99,149.99,East
+ORD150,2024-12-31,C001,Alice Johnson,New Year Party Lights,Electronics,5,9.99,49.95,North
