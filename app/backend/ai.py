@@ -8,15 +8,15 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are an expert e-commerce business analyst with 15 years of experience.
-Given an analytics summary, provide a structured analysis:
+SYSTEM_PROMPT = """أنت محلل أعمال خبير في التجارة الإلكترونية بخبرة 15 سنة.
+بناءً على ملخص التحليلات المقدم، قدم تحليلاً منظماً باللغة العربية:
 
-1. **💡 KEY INSIGHTS** (3-5 bullet points) — What's working well, patterns, standout metrics
-2. **⚠️ PROBLEMS DETECTED** (3-5 bullet points) — Revenue risks, retention issues, underperformance
-3. **🚀 ACTION PLAN TO INCREASE REVENUE** (5-7 steps) — Specific, measurable, prioritized with HIGH/MEDIUM/LOW
+1. **الرؤى الرئيسية** (3-5 نقاط) — ما الذي يعمل بشكل جيد، الأنماط، المقاييس البارزة
+2. **المشاكل المكتشفة** (3-5 نقاط) — مخاطر الإيرادات، مشاكل الاحتفاظ، ضعف الأداء
+3. **خطة عمل لزيادة الإيرادات** (5-7 خطوات) — خطوات محددة وقابلة للقياس ومرتبة حسب الأولوية (عالي/متوسط/منخفض)
 
-Be specific with numbers. Reference the actual data. Professional but accessible tone.
-Use markdown formatting with bold text and bullet points."""
+كن دقيقاً بالأرقام. اشر إلى البيانات الفعلية. اكتب بأسلوب مهني وسهل الفهم.
+استخدم تنسيق Markdown مع النص العريض والنقاط."""
 
 
 def _get_google_api_key() -> str:
@@ -77,70 +77,70 @@ def _generate_fallback_insights(analytics: dict) -> str:
 
     # --- Insights ---
     insights.append(
-        f"Your store generated **${kpis['total_revenue']:,.2f}** in total revenue "
-        f"across **{kpis['total_orders']}** orders from **{kpis['total_customers']}** customers."
+        f"حقق متجرك إيرادات إجمالية **${kpis['total_revenue']:,.2f}** "
+        f"من **{kpis['total_orders']}** طلب و **{kpis['total_customers']}** عميل."
     )
     if kpis["repeat_customer_rate"] > 30:
-        insights.append(f"Strong loyalty: **{kpis['repeat_customer_rate']}%** repeat buyers.")
+        insights.append(f"ولاء قوي: **{kpis['repeat_customer_rate']}%** من العملاء يشترون أكثر من مرة.")
     else:
-        insights.append(f"Repeat rate at **{kpis['repeat_customer_rate']}%** — room to improve retention.")
+        insights.append(f"معدل التكرار **{kpis['repeat_customer_rate']}%** — هناك فرصة لتحسين الاحتفاظ بالعملاء.")
 
-    insights.append(f"Average order value: **${kpis['avg_order_value']:,.2f}**.")
+    insights.append(f"متوسط قيمة الطلب: **${kpis['avg_order_value']:,.2f}**.")
 
     if top_products:
-        insights.append(f"Top seller: **{top_products[0]['product_name']}** (${top_products[0]['revenue']:,.2f}).")
+        insights.append(f"المنتج الأكثر مبيعاً: **{top_products[0]['product_name']}** (${top_products[0]['revenue']:,.2f}).")
 
     if len(monthly) >= 3:
         recent = monthly[-1]["revenue"]
         previous = monthly[-2]["revenue"]
         if recent > previous:
             pct = round(((recent - previous) / previous) * 100, 1) if previous > 0 else 0
-            insights.append(f"Revenue trending up: {monthly[-1]['month']} grew **{pct}%** vs prior month.")
+            insights.append(f"الإيرادات في ارتفاع: {monthly[-1]['month']} نمت **{pct}%** مقارنة بالشهر السابق.")
 
     # --- Problems ---
     if kpis["churn_rate"] > 50:
-        problems.append(f"⚠️ High churn ({kpis['churn_rate']}%): {kpis['inactive_customers']} inactive customers.")
+        problems.append(f"معدل فقدان عملاء مرتفع ({kpis['churn_rate']}%): {kpis['inactive_customers']} عميل غير نشط.")
     elif kpis["churn_rate"] > 30:
-        problems.append(f"Moderate churn ({kpis['churn_rate']}%): re-engage {kpis['inactive_customers']} customers.")
+        problems.append(f"معدل فقدان متوسط ({kpis['churn_rate']}%): أعد استهداف {kpis['inactive_customers']} عميل.")
 
     if kpis["repeat_customer_rate"] < 25:
-        problems.append(f"Low repeat rate ({kpis['repeat_customer_rate']}%): most buy only once.")
+        problems.append(f"معدل تكرار منخفض ({kpis['repeat_customer_rate']}%): معظم العملاء يشترون مرة واحدة فقط.")
 
     if kpis["avg_items_per_order"] < 1.5:
-        problems.append(f"Low basket size ({kpis['avg_items_per_order']} items/order).")
+        problems.append(f"حجم سلة منخفض ({kpis['avg_items_per_order']} منتج/طلب).")
 
     if categories and len(categories) > 1:
         if categories[0]["revenue"] > categories[-1]["revenue"] * 3:
             problems.append(
-                f"Revenue concentration: '{categories[0]['category']}' at ${categories[0]['revenue']:,.2f} "
-                f"vs '{categories[-1]['category']}' at ${categories[-1]['revenue']:,.2f}."
+                f"تركز الإيرادات: '{categories[0]['category']}' بقيمة ${categories[0]['revenue']:,.2f} "
+                f"مقابل '{categories[-1]['category']}' بقيمة ${categories[-1]['revenue']:,.2f}."
             )
 
     if not problems:
-        problems.append("No critical issues. Focus on scaling what works.")
+        problems.append("لا توجد مشاكل حرجة. ركز على توسيع ما ينجح.")
 
     # --- Actions ---
-    actions.append(f"🎯 **Loyalty program**: Target {kpis['inactive_customers']} inactive customers. *HIGH*")
-    actions.append(f"📦 **Cross-selling**: Boost items/order from {kpis['avg_items_per_order']} to 2.0+. *HIGH*")
+    actions.append(f"**برنامج ولاء**: استهدف {kpis['inactive_customers']} عميل غير نشط. *أولوية عالية*")
+    actions.append(f"**البيع المتقاطع**: رفع المنتجات/طلب من {kpis['avg_items_per_order']} إلى 2.0+. *أولوية عالية*")
 
     if top_products and len(top_products) >= 2:
         actions.append(
-            f"📢 **Promote winners**: Push '{top_products[0]['product_name']}' & "
-            f"'{top_products[1]['product_name']}'. *MEDIUM*"
+            f"**ترويج الأفضل**: ادفع '{top_products[0]['product_name']}' و "
+            f"'{top_products[1]['product_name']}'. *أولوية متوسطة*"
         )
     if categories and len(categories) >= 2:
-        actions.append(f"📊 **Boost '{categories[-1]['category']}'**: Only ${categories[-1]['revenue']:,.2f}. *MEDIUM*")
+        actions.append(f"**تعزيز '{categories[-1]['category']}'**: فقط ${categories[-1]['revenue']:,.2f}. *أولوية متوسطة*")
     if regions and len(regions) >= 2:
-        actions.append(f"🌍 **Expand '{regions[-1]['region']}'**: ${regions[-1]['revenue']:,.2f}. *MEDIUM*")
+        actions.append(f"**التوسع في '{regions[-1]['region']}'**: ${regions[-1]['revenue']:,.2f}. *أولوية متوسطة*")
 
-    actions.append("📧 **Email automation**: Cart recovery, post-purchase, newsletters. *HIGH*")
-    actions.append("📈 **Seasonal planning**: Prep for peaks, promote in slow months. *LOW*")
+    actions.append("**أتمتة البريد الإلكتروني**: استرداد السلة، ما بعد الشراء، النشرات الإخبارية. *أولوية عالية*")
+    actions.append("**التخطيط الموسمي**: استعد للذروة، روّج في الأشهر البطيئة. *أولوية منخفضة*")
 
-    parts = ["## 💡 Key Insights\n"]
+    parts = ["## الرؤى الرئيسية\n"]
     parts.extend(f"- {i}\n" for i in insights)
-    parts.append("\n## ⚠️ Problems Detected\n")
+    parts.append("\n## المشاكل المكتشفة\n")
     parts.extend(f"- {p}\n" for p in problems)
-    parts.append("\n## 🚀 Action Plan to Increase Revenue\n")
+    parts.append("\n## خطة عمل لزيادة الإيرادات\n")
     for idx, a in enumerate(actions, 1):
         parts.append(f"{idx}. {a}\n\n")
 
