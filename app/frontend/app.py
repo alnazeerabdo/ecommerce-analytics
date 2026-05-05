@@ -37,11 +37,35 @@ st.markdown("""
 
     #MainMenu, footer, header { visibility: hidden; }
 
+    /* Wider sidebar */
+    [data-testid="stSidebar"] { min-width: 320px !important; max-width: 320px !important; }
+    [data-testid="stSidebar"] > div:first-child { width: 320px !important; }
+
     .block-container {
         padding-top: 1rem;
         padding-bottom: 1rem;
         max-width: 1400px;
     }
+
+    /* Flat icon circles */
+    .flat-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        font-size: 20px;
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: #fff;
+    }
+    .fi-purple { background: #6c5ce7; }
+    .fi-blue { background: #0984e3; }
+    .fi-green { background: #00b894; }
+    .fi-pink { background: #e17055; }
+    .fi-teal { background: #00cec9; }
+    .fi-orange { background: #f39c12; }
 
     /* KPI Cards */
     .kpi-card {
@@ -72,7 +96,7 @@ st.markdown("""
         transform: translateY(-4px);
         box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
-    .kpi-icon { font-size: 32px; margin-bottom: 8px; }
+    .kpi-icon { margin-bottom: 8px; }
     .kpi-value {
         font-size: 28px;
         font-weight: 800;
@@ -200,6 +224,7 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background: #ffffff;
         border-left: 1px solid rgba(0,0,0,0.06);
+        padding-top: 1rem;
     }
 
     /* Divider */
@@ -234,13 +259,13 @@ st.markdown("""
 
 
 # --- Helper Functions ---
-def render_kpi(icon, value, label, color="purple", badge=None, badge_type="good"):
+def render_kpi(icon_letter, value, label, color="purple", badge=None, badge_type="good"):
     badge_html = ""
     if badge:
         badge_html = f'<div class="kpi-badge badge-{badge_type}">{badge}</div>'
     st.markdown(f"""
     <div class="kpi-card {color}">
-        <div class="kpi-icon">{icon}</div>
+        <div class="kpi-icon"><span class="flat-icon fi-{color}" style="width:40px;height:40px;border-radius:12px;font-size:16px;">{icon_letter}</span></div>
         <div class="kpi-value">{value}</div>
         <div class="kpi-label">{label}</div>
         {badge_html}
@@ -260,9 +285,9 @@ def chart_layout():
 
 # --- Sidebar ---
 with st.sidebar:
-    st.markdown("## 📊 وكيل التحليلات")
+    st.markdown("## وكيل التحليلات")
     st.markdown("---")
-    st.markdown("### 📁 رفع ملف البيانات")
+    st.markdown("### رفع ملف البيانات")
 
     uploaded_file = st.file_uploader(
         "اسحب ملفك هنا أو اختر ملف",
@@ -271,13 +296,13 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    use_sample = st.button("📂 تحميل بيانات تجريبية", use_container_width=True, type="primary")
+    use_sample = st.button("تحميل بيانات تجريبية", use_container_width=True, type="primary")
     st.markdown("---")
 
     # Tips section
     st.markdown("""
     <div class="tips-box">
-        <h3>💡 نصائح للحصول على أفضل نتائج</h3>
+        <h3>نصائح للحصول على أفضل نتائج</h3>
         <ul>
             <li>أضف عمود <b>التاريخ</b> لعرض الاتجاهات الشهرية</li>
             <li>أضف عمود <b>المنتج</b> لمعرفة الأكثر مبيعاً</li>
@@ -291,7 +316,7 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption("يدعم أسماء الأعمدة بالعربية والإنجليزية")
-    st.caption("مبني بـ ❤️ باستخدام Streamlit + Supabase + Gemini")
+    st.caption("مبني باستخدام Streamlit + Supabase + Gemini")
 
 
 # --- Load Data ---
@@ -321,7 +346,7 @@ if df is None and "data" in st.session_state:
 if df is None:
     st.markdown("""
     <div class="hero">
-        <h1>📊 وكيل تحليلات التجارة الإلكترونية</h1>
+        <h1>وكيل تحليلات التجارة الإلكترونية</h1>
         <p>ارفع ملف بيانات المبيعات (CSV أو Excel) واحصل على تحليلات شاملة<br>وتوصيات ذكية مدعومة بالذكاء الاصطناعي لتنمية أعمالك</p>
     </div>
     """, unsafe_allow_html=True)
@@ -330,7 +355,7 @@ if df is None:
     with c1:
         st.markdown("""
         <div class="feature-card">
-            <div style="font-size:42px; margin-bottom:16px;">📤</div>
+            <div class="flat-icon fi-purple">&#8593;</div>
             <div style="font-size:20px; font-weight:700; color:#2d3436; margin-bottom:8px;">١. ارفع بياناتك</div>
             <div style="color:#636e72; font-size:15px; line-height:1.8;">ارفع ملف CSV أو Excel بأي تنسيق — النظام يكتشف الأعمدة تلقائياً</div>
         </div>
@@ -338,7 +363,7 @@ if df is None:
     with c2:
         st.markdown("""
         <div class="feature-card">
-            <div style="font-size:42px; margin-bottom:16px;">📈</div>
+            <div class="flat-icon fi-blue">&#9650;</div>
             <div style="font-size:20px; font-weight:700; color:#2d3436; margin-bottom:8px;">٢. شاهد التحليلات</div>
             <div style="color:#636e72; font-size:15px; line-height:1.8;">مؤشرات الأداء، اتجاهات الإيرادات، أفضل المنتجات، وتحليل العملاء</div>
         </div>
@@ -346,14 +371,14 @@ if df is None:
     with c3:
         st.markdown("""
         <div class="feature-card">
-            <div style="font-size:42px; margin-bottom:16px;">🤖</div>
+            <div class="flat-icon fi-green">AI</div>
             <div style="font-size:20px; font-weight:700; color:#2d3436; margin-bottom:8px;">٣. توصيات الذكاء الاصطناعي</div>
             <div style="color:#636e72; font-size:15px; line-height:1.8;">احصل على توصيات عملية مدعومة بـ Google Gemini لزيادة الأرباح</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.info("👈 ارفع ملف بيانات أو اضغط **تحميل بيانات تجريبية** من الشريط الجانبي للبدء")
+    st.info("ارفع ملف بيانات أو اضغط **تحميل بيانات تجريبية** من الشريط الجانبي للبدء")
     st.stop()
 
 
@@ -366,7 +391,7 @@ col_map = analytics.get("column_mapping", {})
 filename = st.session_state.get("filename", "ملف")
 st.markdown(f"""
 <div class="hero" style="padding: 24px 40px;">
-    <h1>📊 لوحة تحليلات المبيعات</h1>
+    <h1>لوحة تحليلات المبيعات</h1>
     <p>تحليل <strong>{filename}</strong> — {kpis['total_orders']} طلب • {analytics['date_range']['start']} إلى {analytics['date_range']['end']}</p>
 </div>
 """, unsafe_allow_html=True)
@@ -374,10 +399,10 @@ st.markdown(f"""
 # Show column mapping
 if col_map:
     role_labels = {
-        "date": "📅 التاريخ", "order_id": "🔢 رقم الطلب", "customer_id": "👤 رقم العميل",
-        "customer_name": "👤 اسم العميل", "product": "📦 المنتج", "category": "🏷️ التصنيف",
-        "quantity": "📊 الكمية", "total_price": "💰 المبلغ", "unit_price": "💲 سعر الوحدة",
-        "region": "🌍 المنطقة",
+        "date": "التاريخ", "order_id": "رقم الطلب", "customer_id": "رقم العميل",
+        "customer_name": "اسم العميل", "product": "المنتج", "category": "التصنيف",
+        "quantity": "الكمية", "total_price": "المبلغ", "unit_price": "سعر الوحدة",
+        "region": "المنطقة",
     }
     chips = " ".join(
         f'<span class="col-map-item">{role_labels.get(role, role)}: {col}</span>'
@@ -385,7 +410,7 @@ if col_map:
     )
     st.markdown(f"""
     <div class="col-map">
-        <span style="font-weight:700; color:#2d3436; font-size:14px;">🔍 الأعمدة المكتشفة تلقائياً:</span><br>
+        <span style="font-weight:700; color:#2d3436; font-size:14px;">الأعمدة المكتشفة تلقائياً:</span><br>
         {chips}
     </div>
     """, unsafe_allow_html=True)
@@ -394,40 +419,40 @@ if col_map:
 # ============================
 # KPI CARDS
 # ============================
-st.markdown('<div class="section-title">📋 مؤشرات الأداء الرئيسية</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">مؤشرات الأداء الرئيسية</div>', unsafe_allow_html=True)
 
 c1, c2, c3, c4 = st.columns(4)
 with c1:
-    render_kpi("💰", f"${kpis['total_revenue']:,.2f}", "إجمالي الإيرادات", "purple")
+    render_kpi("$", f"${kpis['total_revenue']:,.2f}", "إجمالي الإيرادات", "purple")
 with c2:
-    render_kpi("📦", f"{kpis['total_orders']:,}", "إجمالي الطلبات", "blue")
+    render_kpi("#", f"{kpis['total_orders']:,}", "إجمالي الطلبات", "blue")
 with c3:
-    render_kpi("👥", f"{kpis['total_customers']:,}", "عدد العملاء", "green")
+    render_kpi("U", f"{kpis['total_customers']:,}", "عدد العملاء", "green")
 with c4:
-    render_kpi("🛒", f"${kpis['avg_order_value']:,.2f}", "متوسط قيمة الطلب", "pink")
+    render_kpi("~", f"${kpis['avg_order_value']:,.2f}", "متوسط قيمة الطلب", "pink")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 c5, c6, c7, c8 = st.columns(4)
 with c5:
-    render_kpi("🏷️", f"{kpis['total_products']}", "عدد المنتجات", "teal")
+    render_kpi("P", f"{kpis['total_products']}", "عدد المنتجات", "teal")
 with c6:
-    render_kpi("📊", f"{kpis['avg_items_per_order']}", "منتجات لكل طلب", "orange")
+    render_kpi("x", f"{kpis['avg_items_per_order']}", "منتجات لكل طلب", "orange")
 with c7:
     bt = "good" if kpis['repeat_customer_rate'] > 30 else "warn"
-    bl = "جيد ✓" if bt == "good" else "يحتاج تحسين"
-    render_kpi("🔄", f"{kpis['repeat_customer_rate']}%", "معدل تكرار الشراء", "green", bl, bt)
+    bl = "جيد" if bt == "good" else "يحتاج تحسين"
+    render_kpi("%", f"{kpis['repeat_customer_rate']}%", "معدل تكرار الشراء", "green", bl, bt)
 with c8:
     bt = "warn" if kpis['churn_rate'] > 40 else "good"
-    bl = "مرتفع ⚠️" if bt == "warn" else "مستقر ✓"
-    render_kpi("📉", f"{kpis['churn_rate']}%", "معدل فقدان العملاء", "pink", bl, bt)
+    bl = "مرتفع" if bt == "warn" else "مستقر"
+    render_kpi("!", f"{kpis['churn_rate']}%", "معدل فقدان العملاء", "pink", bl, bt)
 
 
 # ============================
 # CHARTS
 # ============================
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title">📈 تحليل الإيرادات</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">تحليل الإيرادات</div>', unsafe_allow_html=True)
 
 theme = chart_layout()
 
@@ -445,12 +470,12 @@ with col_l:
             marker=dict(size=8, color="#6c5ce7"),
             hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
         ))
-        fig.update_layout(title="📈 اتجاه الإيرادات الشهرية", height=400, **theme)
+        fig.update_layout(title="اتجاه الإيرادات الشهرية", height=400, **theme)
         fig.update_yaxes(gridcolor="rgba(0,0,0,0.04)")
         fig.update_xaxes(gridcolor="rgba(0,0,0,0.04)")
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("📅 أضف عمود تاريخ في بياناتك لعرض الاتجاهات الشهرية")
+        st.info("أضف عمود تاريخ في بياناتك لعرض الاتجاهات الشهرية")
 
 with col_r:
     cat_df = pd.DataFrame(analytics["category_breakdown"])
@@ -463,14 +488,14 @@ with col_r:
             textfont=dict(size=12, color="#2d3436"),
             hovertemplate="<b>%{label}</b><br>الإيراد: $%{value:,.2f}<br>النسبة: %{percent}<extra></extra>",
         )])
-        fig.update_layout(title="🏷️ الإيرادات حسب التصنيف", height=400, showlegend=False, **theme)
+        fig.update_layout(title="الإيرادات حسب التصنيف", height=400, showlegend=False, **theme)
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("🏷️ أضف عمود تصنيف في بياناتك لعرض هذا الرسم")
+        st.info("أضف عمود تصنيف في بياناتك لعرض هذا الرسم")
 
 
 # Row 2
-st.markdown('<div class="section-title">🏆 أداء المنتجات والمناطق</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">أداء المنتجات والمناطق</div>', unsafe_allow_html=True)
 
 col_l2, col_r2 = st.columns(2)
 
@@ -488,12 +513,12 @@ with col_l2:
             ),
             hovertemplate="<b>%{y}</b><br>الإيراد: $%{x:,.2f}<extra></extra>",
         )])
-        fig.update_layout(title="📦 أفضل ١٠ منتجات", height=450, **theme)
+        fig.update_layout(title="أفضل ١٠ منتجات", height=450, **theme)
         fig.update_yaxes(gridcolor="rgba(0,0,0,0.02)")
         fig.update_xaxes(gridcolor="rgba(0,0,0,0.04)")
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("📦 أضف عمود اسم المنتج لعرض أفضل المنتجات")
+        st.info("أضف عمود اسم المنتج لعرض أفضل المنتجات")
 
 with col_r2:
     region_df = pd.DataFrame(analytics["regional_performance"])
@@ -506,20 +531,20 @@ with col_r2:
             ),
             hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
         )])
-        fig.update_layout(title="🌍 الإيرادات حسب المنطقة", height=450, **theme)
+        fig.update_layout(title="الإيرادات حسب المنطقة", height=450, **theme)
         fig.update_yaxes(gridcolor="rgba(0,0,0,0.04)")
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("🌍 أضف عمود المنطقة/المدينة لعرض الأداء الجغرافي")
+        st.info("أضف عمود المنطقة/المدينة لعرض الأداء الجغرافي")
 
 
 # ============================
 # DATA EXPLORER
 # ============================
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title">🔍 مستكشف البيانات</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">مستكشف البيانات</div>', unsafe_allow_html=True)
 
-with st.expander("📋 عرض البيانات الخام", expanded=False):
+with st.expander("عرض البيانات الخام", expanded=False):
     st.dataframe(df, use_container_width=True, height=400)
     st.caption(f"إجمالي الصفوف: {len(df)}")
 
@@ -528,7 +553,7 @@ with st.expander("📋 عرض البيانات الخام", expanded=False):
 # TOP CUSTOMERS
 # ============================
 if analytics["top_customers"]:
-    st.markdown('<div class="section-title">👑 أفضل العملاء</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">أفضل العملاء</div>', unsafe_allow_html=True)
     cust_df = pd.DataFrame(analytics["top_customers"])
     st.dataframe(cust_df, use_container_width=True, hide_index=True)
 
@@ -537,11 +562,11 @@ if analytics["top_customers"]:
 # AI INSIGHTS
 # ============================
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title">🤖 توصيات الذكاء الاصطناعي</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">توصيات الذكاء الاصطناعي</div>', unsafe_allow_html=True)
 
 st.markdown("""
 <div class="ai-panel">
-    <div class="ai-badge">🤖 تحليل مدعوم بالذكاء الاصطناعي</div>
+    <div class="ai-badge">AI — تحليل مدعوم بالذكاء الاصطناعي</div>
     <p style="color: #636e72; margin: 0; font-size: 15px; line-height: 1.8;">
         اضغط الزر أدناه للحصول على تحليل ذكي لبياناتك يتضمن رؤى رئيسية، مشاكل مكتشفة، وخطة عمل لزيادة الإيرادات.
     </p>
@@ -550,15 +575,15 @@ st.markdown("""
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-if st.button("🚀 توليد تحليل الذكاء الاصطناعي", use_container_width=True, type="primary"):
-    with st.spinner("🤖 جاري تحليل بياناتك وتوليد التوصيات..."):
+if st.button("توليد تحليل الذكاء الاصطناعي", use_container_width=True, type="primary"):
+    with st.spinner("جاري تحليل بياناتك وتوليد التوصيات..."):
         summary_text = generate_summary_text(analytics)
         result = generate_insights(analytics, summary_text)
         st.session_state["ai_insights"] = result
 
 if "ai_insights" in st.session_state:
     result = st.session_state["ai_insights"]
-    source_label = "🤖 Google Gemini AI" if result["source"] == "gemini" else "📊 محرك التحليل المدمج"
+    source_label = "Google Gemini AI" if result["source"] == "gemini" else "محرك التحليل المدمج"
     st.caption(f"مدعوم بـ: **{result['model_used']}** ({source_label})")
     st.markdown("---")
     st.markdown(result["insights_text"])
