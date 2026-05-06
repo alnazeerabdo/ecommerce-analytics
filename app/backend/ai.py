@@ -279,14 +279,14 @@ def generate_insights(analytics: dict, summary_text: str) -> dict:
         logger.info("Calling Google Gemini API...")
         insights_text = _generate_with_gemini(summary_text, api_key)
         if insights_text:
-            model_used = "Google Gemini 2.0 Flash"
+            model_used = "Gemini 3.1 Flash Lite"
             source = "gemini"
             logger.info("Successfully generated AI insights via Gemini.")
 
     if not insights_text:
         logger.info("Using built-in rule-based analysis engine.")
         insights_text = _generate_fallback_insights(analytics)
-        model_used = "Built-in Analytics Engine"
+        model_used = "محرك التحليل المدمج"
         source = "builtin"
 
     return {"insights_text": insights_text, "model_used": model_used, "source": source}

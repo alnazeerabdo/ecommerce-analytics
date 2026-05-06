@@ -593,4 +593,9 @@ if "ai_insights" in st.session_state:
     source_label = "Google Gemini AI" if result["source"] == "gemini" else "محرك التحليل المدمج"
     st.caption(f"مدعوم بـ: **{result['model_used']}** ({source_label})")
     st.markdown("---")
-    st.markdown(result["insights_text"])
+    st.markdown(
+        f'<div style="direction: rtl; text-align: right; line-height: 2.2; font-size: 16px;">'
+        f'{result["insights_text"]}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
