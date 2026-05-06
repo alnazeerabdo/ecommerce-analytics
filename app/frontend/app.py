@@ -41,6 +41,13 @@ st.markdown("""
     [data-testid="stSidebar"] { min-width: 320px !important; max-width: 320px !important; }
     [data-testid="stSidebar"] > div:first-child { width: 320px !important; }
 
+    /* Hide broken Material Icon text (Render can't load Google icon font) */
+    [data-testid="stSidebar"] button[kind="headerNoPadding"] { display: none !important; }
+    [data-testid="collapsedControl"] { display: none !important; }
+    .stExpander summary span[data-testid="stMarkdownContainer"] p { font-family: 'Tajawal', sans-serif !important; }
+    button[data-testid="baseButton-secondary"] .material-symbols-rounded,
+    .stExpander .material-symbols-rounded { font-size: 0 !important; }
+
     .block-container {
         padding-top: 1rem;
         padding-bottom: 1rem;
