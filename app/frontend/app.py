@@ -44,9 +44,19 @@ st.markdown("""
     /* Hide broken Material Icon text (Render can't load Google icon font) */
     [data-testid="stSidebar"] button[kind="headerNoPadding"] { display: none !important; }
     [data-testid="collapsedControl"] { display: none !important; }
-    .stExpander summary span[data-testid="stMarkdownContainer"] p { font-family: 'Tajawal', sans-serif !important; }
-    button[data-testid="baseButton-secondary"] .material-symbols-rounded,
-    .stExpander .material-symbols-rounded { font-size: 0 !important; }
+
+    /* Hide broken icon text inside file_uploader button ("upload" shown as text) */
+    [data-testid="stFileUploader"] button .material-symbols-rounded { display: none !important; }
+    [data-testid="stFileUploader"] button span[class*="material"] { display: none !important; }
+    [data-testid="stFileUploaderDropzoneInstructions"] .material-symbols-rounded { display: none !important; }
+
+    /* Hide broken icon text in expander arrow ("keyboard_ar" / "expand_more") */
+    .stExpander summary .material-symbols-rounded { display: none !important; }
+    .stExpander details summary span[data-testid="stMarkdownContainer"] p { font-family: 'Tajawal', sans-serif !important; }
+    button[data-testid="baseButton-secondary"] .material-symbols-rounded { display: none !important; }
+
+    /* Fallback: zero font-size on any remaining broken material icon text */
+    span.material-symbols-rounded { font-size: 0 !important; width: 0 !important; overflow: hidden !important; }
 
     .block-container {
         padding-top: 1rem;
