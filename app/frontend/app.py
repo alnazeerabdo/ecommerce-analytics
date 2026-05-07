@@ -41,22 +41,29 @@ st.markdown("""
     [data-testid="stSidebar"] { min-width: 320px !important; max-width: 320px !important; }
     [data-testid="stSidebar"] > div:first-child { width: 320px !important; }
 
-    /* Hide broken Material Icon text (Render can't load Google icon font) */
+    /* === NUCLEAR ICON FIX ===
+       Material Symbols font fails on Render. The browser renders the icon
+       name as raw text (e.g. "upload", "keyboard_ar"). We hide ALL of them
+       using every possible selector variant. */
     [data-testid="stSidebar"] button[kind="headerNoPadding"] { display: none !important; }
     [data-testid="collapsedControl"] { display: none !important; }
 
-    /* Hide broken icon text inside file_uploader button ("upload" shown as text) */
-    [data-testid="stFileUploader"] button .material-symbols-rounded { display: none !important; }
-    [data-testid="stFileUploader"] button span[class*="material"] { display: none !important; }
-    [data-testid="stFileUploaderDropzoneInstructions"] .material-symbols-rounded { display: none !important; }
-
-    /* Hide broken icon text in expander arrow ("keyboard_ar" / "expand_more") */
-    .stExpander summary .material-symbols-rounded { display: none !important; }
-    .stExpander details summary span[data-testid="stMarkdownContainer"] p { font-family: 'Tajawal', sans-serif !important; }
-    button[data-testid="baseButton-secondary"] .material-symbols-rounded { display: none !important; }
-
-    /* Fallback: zero font-size on any remaining broken material icon text */
-    span.material-symbols-rounded { font-size: 0 !important; width: 0 !important; overflow: hidden !important; }
+    /* Attribute wildcard — catches .material-symbols-rounded, .material-symbols-outlined, etc. */
+    [class*="material-symbol"] {
+        font-size: 0 !important;
+        line-height: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        visibility: hidden !important;
+        display: inline-block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        opacity: 0 !important;
+    }
 
     .block-container {
         padding-top: 1rem;
@@ -272,6 +279,23 @@ st.markdown("""
         font-weight: 600;
     }
 </style>
+""", unsafe_allow_html=True)
+# --- Inject JS to remove broken Material Icon text nodes ---
+st.markdown("""
+<script>
+(function() {
+    function purgeIcons() {
+        // Remove any element whose class includes 'material-symbol'
+        document.querySelectorAll('[class*="material-symbol"]').forEach(function(el) {
+            el.style.cssText = 'font-size:0!important;width:0!important;height:0!important;overflow:hidden!important;visibility:hidden!important;display:inline-block!important;';
+        });
+    }
+    purgeIcons();
+    // Re-run every time Streamlit re-renders the DOM
+    var observer = new MutationObserver(function() { purgeIcons(); });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 """, unsafe_allow_html=True)
 
 
@@ -561,9 +585,11 @@ with col_r2:
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">مستكشف البيانات</div>', unsafe_allow_html=True)
 
-with st.expander("عرض البيانات الخام", expanded=False):
+show_raw = st.checkbox("عرض البيانات الخام", value=False)
+if show_raw:
     st.dataframe(df, use_container_width=True, height=400)
     st.caption(f"إجمالي الصفوف: {len(df)}")
+
 
 
 # ============================
