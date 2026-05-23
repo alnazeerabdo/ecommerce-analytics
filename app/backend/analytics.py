@@ -25,7 +25,8 @@ COLUMN_PATTERNS = {
     ],
     "customer_name": [
         r"customer.?name", r"client.?name", r"buyer.?name", r"اسم.?العميل",
-        r"اسم.?الزبون", r"full.?name", r"الاسم",
+        r"اسم.?الزبون", r"full.?name", r"الاسم", r"العميل", r"العملاء",
+        r"customer", r"client", r"buyer",
     ],
     "product": [
         r"product", r"item", r"المنتج", r"اسم.?المنتج", r"السلعة",
