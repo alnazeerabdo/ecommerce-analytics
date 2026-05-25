@@ -1,69 +1,67 @@
-# 📊 E-commerce Analytics Agent
+# AI-Powered E-Commerce Analytics System
 
-AI-powered SaaS dashboard that analyzes e-commerce CSV data and provides actionable business insights.
+This project is an Arabic-first analytics app (Streamlit + FastAPI + Pandas) for e-commerce teams.
+It now aligns with a broader AI analytics blueprint: richer inputs, deeper analysis, and clearer outputs.
 
-## 🚀 Quick Start
+## 1) Data Inputs Supported
 
-### 1. Install Dependencies
+### Core (already supported)
+- Orders/transactions: order id, date/time, quantity, prices, totals.
+- Customers: customer id/name.
+- Products: product and category.
+- Region/location: city/region/country style columns.
+
+### Optional advanced inputs (newly auto-detected)
+- `order_status`
+- `payment_method`
+- `discount_amount`
+- `refund_reason`
+- `traffic_source`
+- `campaign`
+- `ad_spend`
+
+> The engine auto-detects Arabic and English naming variants where possible.
+
+## 2) Analysis Types Implemented
+
+### Existing analyses
+- KPI summary: revenue, orders, customers, products, AOV, churn, repeat rate.
+- Monthly revenue and order trends.
+- Top products, category breakdown, regional performance.
+- Top customers + customer activity/churn indicators.
+
+### New analyses added in this update
+- Order status breakdown.
+- Payment method breakdown.
+- Refund reason breakdown.
+- Traffic source performance (revenue by source).
+- Campaign performance with ROAS when ad spend exists.
+- RFM-lite customer segmentation (`loyal_high_value`, `regular`, `at_risk`).
+
+## 3) Outputs
+
+- Interactive dashboard (Arabic UI, responsive/mobile-friendly).
+- AI-generated insight text from computed analytics.
+- Structured JSON outputs from backend `/analyze` endpoint for downstream reports/alerts.
+
+## 4) Run Locally
+
 ```bash
 pip install -r requirements.txt
-```
-
-### 2. Configure Environment
-Copy `.env.example` to `.env` and fill in your credentials:
-```bash
-cp .env.example .env
-```
-
-Required:
-- `SUPABASE_URL` — Your Supabase project URL
-- `SUPABASE_KEY` — Your Supabase anon key
-
-Optional:
-- `HF_API_TOKEN` — HuggingFace API token for AI insights (app works without it)
-
-### 3. Run the Backend (FastAPI)
-```bash
 python -m uvicorn app.backend.main:app --reload --port 8000
-```
-
-### 4. Run the Frontend (Streamlit)
-```bash
 streamlit run app/frontend/app.py
 ```
 
-### 5. Open the Dashboard
-Visit `http://localhost:8501` in your browser.
+Open: `http://localhost:8501`
 
-## 📁 Project Structure
-```
-analyist/
-├── app/
-│   ├── backend/
-│   │   ├── __init__.py
-│   │   ├── main.py          # FastAPI server
-│   │   ├── analytics.py     # Pandas analytics engine
-│   │   └── ai.py            # AI insights (HuggingFace + fallback)
-│   └── frontend/
-│       └── app.py            # Streamlit dashboard
-├── data_sample.csv            # 150-row demo dataset
-├── requirements.txt
-├── .env                       # Your credentials (not committed)
-├── .env.example               # Template
-└── README.md
-```
+## 5) API Endpoints
 
-## 📊 Features
-- **CSV Upload** — Drag & drop e-commerce data
-- **KPI Dashboard** — Revenue, orders, customers, AOV, churn
-- **Interactive Charts** — Monthly trends, product performance, categories, regions
-- **Data Explorer** — Filter and browse raw data
-- **AI Insights** — Business recommendations powered by HuggingFace or built-in engine
+- `GET /health`
+- `POST /upload`
+- `POST /analyze`
+- `POST /insights`
 
-## 🧰 Tech Stack
-| Layer | Technology |
-|-------|-----------|
-| Backend | FastAPI + Pandas |
-| Frontend | Streamlit + Plotly |
-| Database | Supabase (PostgreSQL) |
-| AI | HuggingFace Inference API |
+## 6) Notes
+
+- If a dataset does not contain an optional column, related advanced sections are returned as empty lists.
+- Column detection is heuristic; for best results use clear field names matching business semantics.
