@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="وكيل التحليلات — ذكاء التجارة الإلكترونية",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 # --- Modern Light Arabic CSS ---
@@ -37,9 +37,8 @@ st.markdown("""
 
     #MainMenu, footer, header { visibility: hidden; }
 
-    /* Wider sidebar */
-    [data-testid="stSidebar"] { min-width: 320px !important; max-width: 320px !important; }
-    [data-testid="stSidebar"] > div:first-child { width: 320px !important; }
+    /* Hide sidebar completely (upload moved to page body) */
+    [data-testid="stSidebar"] { display: none !important; }
 
     /* === NUCLEAR ICON FIX ===
        Material Symbols font fails on Render. The browser renders the icon
@@ -160,6 +159,13 @@ st.markdown("""
         background: linear-gradient(90deg, rgba(108,92,231,0.3), transparent);
         border-radius: 2px;
     }
+    .soft-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+        padding: 14px;
+    }
 
     /* Hero */
     .hero {
@@ -244,11 +250,58 @@ st.markdown("""
         box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
 
-    /* Sidebar */
-    [data-testid="stSidebar"] {
+    /* Upload panel */
+    .upload-panel {
         background: #ffffff;
-        border-left: 1px solid rgba(0,0,0,0.06);
-        padding-top: 1rem;
+        border-radius: 20px;
+        padding: 22px;
+        border: 1px solid rgba(108,92,231,0.12);
+        box-shadow: 0 4px 24px rgba(108,92,231,0.06);
+        margin-bottom: 16px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 0.5rem;
+            padding-left: 0.6rem;
+            padding-right: 0.6rem;
+        }
+        .hero {
+            padding: 22px 16px !important;
+            border-radius: 16px;
+        }
+        .hero h1 {
+            font-size: 28px !important;
+        }
+        .hero p {
+            font-size: 15px !important;
+            line-height: 1.7 !important;
+        }
+        .section-title {
+            font-size: 19px;
+            margin: 24px 0 12px 0;
+        }
+        .kpi-card {
+            border-radius: 16px;
+            padding: 18px 14px;
+        }
+        .kpi-value {
+            font-size: 24px;
+        }
+        .feature-card,
+        .tips-box,
+        .upload-panel,
+        .ai-panel {
+            border-radius: 16px;
+            padding: 16px !important;
+        }
+        .stButton > button {
+            min-height: 44px;
+            font-size: 15px;
+            border-radius: 12px;
+        }
+        .soft-card { padding: 10px; border-radius: 14px; }
     }
 
     /* Divider */
@@ -324,40 +377,38 @@ def chart_layout():
     )
 
 
-# --- Sidebar ---
-with st.sidebar:
-    st.markdown("## وكيل التحليلات")
-    st.markdown("---")
-    st.markdown("### رفع ملف البيانات")
+# --- Top Upload Area ---
+st.markdown("""
+<div class="hero" style="padding: 28px 32px; margin-bottom: 18px;">
+    <h1 style="font-size:32px;">وكيل تحليلات التجارة الإلكترونية</h1>
+    <p>ارفع ملف بيانات المبيعات (CSV أو Excel) واحصل على تحليلات شاملة وتوصيات ذكية بنفس الهوية البصرية الحالية.</p>
+</div>
+""", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader(
-        "اسحب ملفك هنا أو اختر ملف",
-        type=["csv", "xlsx", "xls"],
-        help="يدعم ملفات CSV و Excel بأي تنسيق أعمدة",
-    )
+st.markdown('<div class="upload-panel">', unsafe_allow_html=True)
+uploaded_file = st.file_uploader(
+    "📁 اسحب ملفك هنا أو اختر ملف",
+    type=["csv", "xlsx", "xls"],
+    help="يدعم ملفات CSV و Excel بأي تنسيق أعمدة",
+)
+use_sample = st.button("تحميل بيانات تجريبية", use_container_width=True, type="primary")
+st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    use_sample = st.button("تحميل بيانات تجريبية", use_container_width=True, type="primary")
-    st.markdown("---")
-
-    # Tips section
-    st.markdown("""
-    <div class="tips-box">
-        <h3>نصائح للحصول على أفضل نتائج</h3>
-        <ul>
-            <li>أضف عمود <b>التاريخ</b> لعرض الاتجاهات الشهرية</li>
-            <li>أضف عمود <b>المنتج</b> لمعرفة الأكثر مبيعاً</li>
-            <li>أضف عمود <b>السعر/المبلغ</b> لحساب الإيرادات</li>
-            <li>أضف عمود <b>العميل</b> لتحليل الولاء</li>
-            <li>أضف عمود <b>التصنيف</b> لتحليل الفئات</li>
-            <li>أضف عمود <b>المنطقة</b> لتحليل المناطق</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.caption("يدعم أسماء الأعمدة بالعربية والإنجليزية")
-    st.caption("مبني باستخدام Streamlit + Supabase + Gemini")
+st.markdown("""
+<div class="tips-box">
+    <h3>نصائح للحصول على أفضل نتائج</h3>
+    <ul>
+        <li>أضف عمود <b>التاريخ</b> لعرض الاتجاهات الشهرية</li>
+        <li>أضف عمود <b>المنتج</b> لمعرفة الأكثر مبيعاً</li>
+        <li>أضف عمود <b>السعر/المبلغ</b> لحساب الإيرادات</li>
+        <li>أضف عمود <b>العميل</b> لتحليل الولاء</li>
+        <li>أضف عمود <b>التصنيف</b> لتحليل الفئات</li>
+        <li>أضف عمود <b>المنطقة</b> لتحليل المناطق</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
+st.caption("يدعم أسماء الأعمدة بالعربية والإنجليزية")
+st.caption("مبني باستخدام Streamlit + Supabase + Gemini")
 
 
 # --- Load Data ---
@@ -385,13 +436,6 @@ if df is None and "data" in st.session_state:
 
 # --- Landing Page ---
 if df is None:
-    st.markdown("""
-    <div class="hero">
-        <h1>وكيل تحليلات التجارة الإلكترونية</h1>
-        <p>ارفع ملف بيانات المبيعات (CSV أو Excel) واحصل على تحليلات شاملة<br>وتوصيات ذكية مدعومة بالذكاء الاصطناعي لتنمية أعمالك</p>
-    </div>
-    """, unsafe_allow_html=True)
-
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("""
@@ -419,7 +463,7 @@ if df is None:
         """, unsafe_allow_html=True)
 
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.info("ارفع ملف بيانات أو اضغط **تحميل بيانات تجريبية** من الشريط الجانبي للبدء")
+    st.info("ارفع ملف بيانات أو اضغط **تحميل بيانات تجريبية** للبدء")
     st.stop()
 
 
@@ -599,6 +643,68 @@ if analytics["top_customers"]:
     st.markdown('<div class="section-title">أفضل العملاء</div>', unsafe_allow_html=True)
     cust_df = pd.DataFrame(analytics["top_customers"])
     st.dataframe(cust_df, use_container_width=True, hide_index=True)
+
+
+# ============================
+# ADVANCED INSIGHTS (NEW)
+# ============================
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">تحليلات متقدمة</div>', unsafe_allow_html=True)
+
+a1, a2 = st.columns(2)
+with a1:
+    src_df = pd.DataFrame(analytics.get("traffic_source_performance", []))
+    if not src_df.empty:
+        fig = go.Figure(data=[go.Bar(
+            x=src_df["source"], y=src_df["revenue"],
+            marker=dict(color="#6c5ce7", cornerradius=8),
+            hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
+        )])
+        fig.update_layout(title="الأداء حسب مصدر الزيارات", height=360, **theme)
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.markdown('<div class="soft-card">أضف عمود مصدر الزيارات (source/channel) لعرض أداء القنوات.</div>', unsafe_allow_html=True)
+
+with a2:
+    seg_df = pd.DataFrame(analytics.get("customer_segments", []))
+    if not seg_df.empty:
+        fig = go.Figure(data=[go.Pie(
+            labels=seg_df["segment"], values=seg_df["customers"], hole=0.5,
+            marker=dict(colors=["#00b894", "#0984e3", "#e17055"]),
+            textinfo="label+percent",
+        )])
+        fig.update_layout(title="توزيع شرائح العملاء (RFM-lite)", height=360, showlegend=False, **theme)
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.markdown('<div class="soft-card">أضف بيانات العميل + التاريخ لعرض شرائح العملاء.</div>', unsafe_allow_html=True)
+
+b1, b2, b3 = st.columns(3)
+with b1:
+    status_df = pd.DataFrame(analytics.get("order_status_breakdown", []))
+    st.markdown("#### حالات الطلب")
+    if not status_df.empty:
+        st.dataframe(status_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود حالة طلب.</div>', unsafe_allow_html=True)
+with b2:
+    pay_df = pd.DataFrame(analytics.get("payment_method_breakdown", []))
+    st.markdown("#### طرق الدفع")
+    if not pay_df.empty:
+        st.dataframe(pay_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود طريقة الدفع.</div>', unsafe_allow_html=True)
+with b3:
+    refund_df = pd.DataFrame(analytics.get("refund_reason_breakdown", []))
+    st.markdown("#### أسباب الاسترجاع")
+    if not refund_df.empty:
+        st.dataframe(refund_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود سبب الاسترجاع.</div>', unsafe_allow_html=True)
+
+camp_df = pd.DataFrame(analytics.get("campaign_performance", []))
+if not camp_df.empty:
+    st.markdown("#### أداء الحملات التسويقية")
+    st.dataframe(camp_df, use_container_width=True, hide_index=True)
 
 
 # ============================
