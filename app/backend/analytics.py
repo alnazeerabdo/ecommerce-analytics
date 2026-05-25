@@ -55,6 +55,16 @@ COLUMN_PATTERNS = {
     ],
 }
 
+OPTIONAL_COLUMN_PATTERNS = {
+    "order_status": [r"status", r"حالة", r"order.?status"],
+    "payment_method": [r"payment", r"payment.?method", r"طريقة.?الدفع", r"الدفع"],
+    "discount_amount": [r"discount", r"coupon", r"promo", r"خصم"],
+    "refund_reason": [r"refund.?reason", r"return.?reason", r"سبب.?الاسترجاع", r"سبب.?الإرجاع"],
+    "traffic_source": [r"source", r"channel", r"utm_source", r"مصدر", r"قناة"],
+    "campaign": [r"campaign", r"utm_campaign", r"ad.?set", r"حملة"],
+    "ad_spend": [r"ad.?spend", r"marketing.?cost", r"cost", r"انفاق", r"تكلفة.?الإعلان"],
+}
+
 
 def _match_column(col_name: str, patterns: list) -> bool:
     """Check if a column name matches any pattern."""
@@ -130,6 +140,21 @@ def detect_columns(df: pd.DataFrame) -> dict:
     return mapping
 
 
+def detect_optional_columns(df: pd.DataFrame, used_cols: set) -> dict:
+    """Detect optional columns used for advanced analysis outputs."""
+    optional_mapping = {}
+    for role, patterns in OPTIONAL_COLUMN_PATTERNS.items():
+        optional_mapping[role] = None
+        for col in df.columns:
+            if col in used_cols:
+                continue
+            if _match_column(col, patterns):
+                optional_mapping[role] = col
+                used_cols.add(col)
+                break
+    return optional_mapping
+
+
 def read_file(file_content: bytes, filename: str) -> pd.DataFrame:
     """Read CSV or Excel file into a DataFrame."""
     import io
@@ -173,6 +198,14 @@ def compute_analytics(df: pd.DataFrame) -> dict:
     total_col = col_map.get("total_price")
     unit_price_col = col_map.get("unit_price")
     region_col = col_map.get("region")
+    optional_map = detect_optional_columns(df, set(v for v in col_map.values() if v))
+    status_col = optional_map.get("order_status")
+    payment_col = optional_map.get("payment_method")
+    discount_col = optional_map.get("discount_amount")
+    refund_reason_col = optional_map.get("refund_reason")
+    source_col = optional_map.get("traffic_source")
+    campaign_col = optional_map.get("campaign")
+    ad_spend_col = optional_map.get("ad_spend")
 
     # Compute total if needed
     if total_col is None and col_map.get("_compute_total"):
@@ -189,6 +222,10 @@ def compute_analytics(df: pd.DataFrame) -> dict:
         df[total_col] = pd.to_numeric(df[total_col], errors="coerce").fillna(0)
     if quantity_col:
         df[quantity_col] = pd.to_numeric(df[quantity_col], errors="coerce").fillna(0)
+    if discount_col:
+        df[discount_col] = pd.to_numeric(df[discount_col], errors="coerce").fillna(0)
+    if ad_spend_col:
+        df[ad_spend_col] = pd.to_numeric(df[ad_spend_col], errors="coerce").fillna(0)
 
     # --- Core KPIs ---
     total_revenue = round(float(df[total_col].sum()), 2) if total_col else 0
@@ -270,6 +307,58 @@ def compute_analytics(df: pd.DataFrame) -> dict:
             .to_dict(orient="records")
         )
 
+    # --- Optional advanced analyses ---
+    order_status_breakdown = []
+    payment_method_breakdown = []
+    refund_reason_breakdown = []
+    traffic_source_performance = []
+    campaign_performance = []
+    customer_segments = []
+
+    if status_col:
+        order_status_breakdown = df[status_col].fillna("Unknown").astype(str).value_counts().reset_index()
+        order_status_breakdown.columns = ["status", "orders"]
+        order_status_breakdown = order_status_breakdown.to_dict(orient="records")
+
+    if payment_col:
+        payment_method_breakdown = df[payment_col].fillna("Unknown").astype(str).value_counts().reset_index()
+        payment_method_breakdown.columns = ["payment_method", "orders"]
+        payment_method_breakdown = payment_method_breakdown.to_dict(orient="records")
+
+    if refund_reason_col:
+        refund_reason_breakdown = df[refund_reason_col].dropna().astype(str).value_counts().head(10).reset_index()
+        refund_reason_breakdown.columns = ["refund_reason", "count"]
+        refund_reason_breakdown = refund_reason_breakdown.to_dict(orient="records")
+
+    if source_col and total_col:
+        src = df.groupby(source_col).agg(revenue=(total_col, "sum")).round(2).sort_values("revenue", ascending=False).reset_index()
+        src = src.rename(columns={source_col: "source"})
+        traffic_source_performance = src.to_dict(orient="records")
+
+    if campaign_col and total_col:
+        agg = {"revenue": (total_col, "sum")}
+        if ad_spend_col:
+            agg["ad_spend"] = (ad_spend_col, "sum")
+        camp = df.groupby(campaign_col).agg(**agg).round(2).reset_index().rename(columns={campaign_col: "campaign"})
+        if "ad_spend" in camp.columns:
+            camp["roas"] = camp.apply(lambda r: round((r["revenue"] / r["ad_spend"]), 2) if r["ad_spend"] > 0 else None, axis=1)
+        campaign_performance = camp.sort_values("revenue", ascending=False).to_dict(orient="records")
+
+    if customer_col and total_col and date_col:
+        snapshot_date = df[date_col].max() + timedelta(days=1)
+        rfm = df.groupby(customer_col).agg(
+            recency=(date_col, lambda x: (snapshot_date - x.max()).days),
+            frequency=(order_col, "nunique") if order_col else (date_col, "count"),
+            monetary=(total_col, "sum"),
+        )
+        rfm["segment"] = np.where(
+            (rfm["recency"] <= 30) & (rfm["frequency"] >= 2), "loyal_high_value",
+            np.where(rfm["recency"] > 60, "at_risk", "regular")
+        )
+        customer_segments = rfm["segment"].value_counts().reset_index()
+        customer_segments.columns = ["segment", "customers"]
+        customer_segments = customer_segments.to_dict(orient="records")
+
     # --- Customer Insights ---
     top_customers = []
     churn_rate = 0
@@ -335,7 +424,14 @@ def compute_analytics(df: pd.DataFrame) -> dict:
         "category_breakdown": category_breakdown,
         "regional_performance": regional_data,
         "top_customers": top_customers,
+        "order_status_breakdown": order_status_breakdown,
+        "payment_method_breakdown": payment_method_breakdown,
+        "refund_reason_breakdown": refund_reason_breakdown,
+        "traffic_source_performance": traffic_source_performance,
+        "campaign_performance": campaign_performance,
+        "customer_segments": customer_segments,
         "column_mapping": {k: v for k, v in col_map.items() if v is not None and k != "_compute_total"},
+        "optional_column_mapping": {k: v for k, v in optional_map.items() if v is not None},
     }
 
 
