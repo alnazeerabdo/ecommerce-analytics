@@ -301,7 +301,7 @@ st.markdown("""
             font-size: 15px;
             border-radius: 12px;
         }
-        .soft-card { padding: 10px; border-radius: 14px; }
+
     }
 
     /* Divider */
