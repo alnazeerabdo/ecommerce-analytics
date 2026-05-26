@@ -159,6 +159,13 @@ st.markdown("""
         background: linear-gradient(90deg, rgba(108,92,231,0.3), transparent);
         border-radius: 2px;
     }
+    .soft-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+        padding: 14px;
+    }
 
     /* Hero */
     .hero {
@@ -294,6 +301,7 @@ st.markdown("""
             font-size: 15px;
             border-radius: 12px;
         }
+
     }
 
     /* Divider */
@@ -635,6 +643,68 @@ if analytics["top_customers"]:
     st.markdown('<div class="section-title">أفضل العملاء</div>', unsafe_allow_html=True)
     cust_df = pd.DataFrame(analytics["top_customers"])
     st.dataframe(cust_df, use_container_width=True, hide_index=True)
+
+
+# ============================
+# ADVANCED INSIGHTS (NEW)
+# ============================
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">تحليلات متقدمة</div>', unsafe_allow_html=True)
+
+a1, a2 = st.columns(2)
+with a1:
+    src_df = pd.DataFrame(analytics.get("traffic_source_performance", []))
+    if not src_df.empty:
+        fig = go.Figure(data=[go.Bar(
+            x=src_df["source"], y=src_df["revenue"],
+            marker=dict(color="#6c5ce7", cornerradius=8),
+            hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
+        )])
+        fig.update_layout(title="الأداء حسب مصدر الزيارات", height=360, **theme)
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.markdown('<div class="soft-card">أضف عمود مصدر الزيارات (source/channel) لعرض أداء القنوات.</div>', unsafe_allow_html=True)
+
+with a2:
+    seg_df = pd.DataFrame(analytics.get("customer_segments", []))
+    if not seg_df.empty:
+        fig = go.Figure(data=[go.Pie(
+            labels=seg_df["segment"], values=seg_df["customers"], hole=0.5,
+            marker=dict(colors=["#00b894", "#0984e3", "#e17055"]),
+            textinfo="label+percent",
+        )])
+        fig.update_layout(title="توزيع شرائح العملاء (RFM-lite)", height=360, showlegend=False, **theme)
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.markdown('<div class="soft-card">أضف بيانات العميل + التاريخ لعرض شرائح العملاء.</div>', unsafe_allow_html=True)
+
+b1, b2, b3 = st.columns(3)
+with b1:
+    status_df = pd.DataFrame(analytics.get("order_status_breakdown", []))
+    st.markdown("#### حالات الطلب")
+    if not status_df.empty:
+        st.dataframe(status_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود حالة طلب.</div>', unsafe_allow_html=True)
+with b2:
+    pay_df = pd.DataFrame(analytics.get("payment_method_breakdown", []))
+    st.markdown("#### طرق الدفع")
+    if not pay_df.empty:
+        st.dataframe(pay_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود طريقة الدفع.</div>', unsafe_allow_html=True)
+with b3:
+    refund_df = pd.DataFrame(analytics.get("refund_reason_breakdown", []))
+    st.markdown("#### أسباب الاسترجاع")
+    if not refund_df.empty:
+        st.dataframe(refund_df, use_container_width=True, hide_index=True, height=220)
+    else:
+        st.markdown('<div class="soft-card">لا يوجد عمود سبب الاسترجاع.</div>', unsafe_allow_html=True)
+
+camp_df = pd.DataFrame(analytics.get("campaign_performance", []))
+if not camp_df.empty:
+    st.markdown("#### أداء الحملات التسويقية")
+    st.dataframe(camp_df, use_container_width=True, hide_index=True)
 
 
 # ============================
