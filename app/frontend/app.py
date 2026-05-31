@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from app.backend.analytics import compute_analytics, generate_summary_text, read_file, detect_columns
 from app.backend.ai import generate_insights
+from app.backend.advanced import compute_advanced
+from app.backend.reports import export_csv, export_excel, export_pdf
 
 # --- Page Config ---
 st.set_page_config(
@@ -399,7 +401,7 @@ st.markdown("""
     <h3>نصائح للحصول على أفضل نتائج</h3>
     <ul>
         <li>أضف عمود <b>التاريخ</b> لعرض الاتجاهات الشهرية</li>
-        <li>أضف عمود <b>المنتج</b> لمعرفة الأكثر مبيعاً</li>
+        <li>أضف عمود <b>المنتج</b> لمعرفة الأ��ثر مبيعاً</li>
         <li>أضف عمود <b>السعر/المبلغ</b> لحساب الإيرادات</li>
         <li>أضف عمود <b>العميل</b> لتحليل الولاء</li>
         <li>أضف عمود <b>التصنيف</b> لتحليل الفئات</li>
@@ -472,11 +474,18 @@ analytics = compute_analytics(df)
 kpis = analytics["kpis"]
 col_map = analytics.get("column_mapping", {})
 
+# --- Compute Advanced Analytics (forecast, recommendations, anomalies, churn, inventory) ---
+@st.cache_data(show_spinner=False)
+def _cached_advanced(_df, churn_rate):
+    return compute_advanced(_df, churn_rate=churn_rate)
+
+advanced = _cached_advanced(df, kpis.get("churn_rate", 0))
+
 # Show detected columns
 filename = st.session_state.get("filename", "ملف")
 st.markdown(f"""
 <div class="hero" style="padding: 24px 40px;">
-    <h1>لوحة تحليلات المبيعات</h1>
+    <h1>لوحة تحلي��ات المبيعات</h1>
     <p>تحليل <strong>{filename}</strong> — {kpis['total_orders']} طلب • {analytics['date_range']['start']} إلى {analytics['date_range']['end']}</p>
 </div>
 """, unsafe_allow_html=True)
@@ -708,6 +717,252 @@ if not camp_df.empty:
 
 
 # ============================
+# SMART ALERTS
+# ============================
+anomalies = advanced.get("anomalies", {})
+alerts = anomalies.get("alerts", [])
+if alerts:
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">التنبيهات الذكية</div>', unsafe_allow_html=True)
+    alert_styles = {
+        "critical": ("#e17055", "rgba(225,112,85,0.08)", "خطر"),
+        "warning": ("#f39c12", "rgba(243,156,18,0.08)", "تحذير"),
+        "ok": ("#00b894", "rgba(0,184,148,0.08)", "سليم"),
+    }
+    for al in alerts:
+        color, bg, tag = alert_styles.get(al["level"], alert_styles["ok"])
+        st.markdown(f"""
+        <div style="background:{bg}; border-right:4px solid {color}; border-radius:12px;
+                    padding:14px 18px; margin:8px 0;">
+            <span style="background:{color}; color:#fff; font-size:11px; font-weight:700;
+                         padding:2px 10px; border-radius:12px;">{tag}</span>
+            <span style="font-weight:700; color:#2d3436; margin-right:8px;">{al['title']}</span>
+            <div style="color:#636e72; font-size:14px; margin-top:6px;">{al['message']}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+# ============================
+# REVENUE FORECAST & SEASONALITY
+# ============================
+forecast = advanced.get("forecast", {})
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">توقع الإيرادات والموسمية</div>', unsafe_allow_html=True)
+
+if forecast.get("available"):
+    horizons = forecast.get("horizons", {})
+    if forecast.get("granularity") == "daily":
+        h1c, h2c, h3c = st.columns(3)
+        with h1c:
+            render_kpi("7", f"${horizons.get('7_day', 0):,.0f}", "توقع 7 أيام", "purple")
+        with h2c:
+            render_kpi("30", f"${horizons.get('30_day', 0):,.0f}", "توقع 30 يوماً", "blue")
+        with h3c:
+            render_kpi("90", f"${horizons.get('90_day', 0):,.0f}", "توقع 90 يوماً", "green")
+    else:
+        h1c, h2c = st.columns(2)
+        with h1c:
+            render_kpi("M", f"${horizons.get('next_month', 0):,.0f}", "توقع الشهر القادم", "purple")
+        with h2c:
+            render_kpi("Q", f"${horizons.get('next_3_months', 0):,.0f}", "توقع 3 أشهر", "blue")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    hist_df = pd.DataFrame(forecast.get("history", []))
+    fc_df = pd.DataFrame(forecast.get("forecast", []))
+    if not hist_df.empty and not fc_df.empty:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=hist_df["date"], y=hist_df["revenue"], mode="lines",
+            name="الإيراد الفعلي", line=dict(color="#0984e3", width=2.5),
+            hovertemplate="<b>%{x}</b><br>فعلي: $%{y:,.2f}<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=fc_df["date"], y=fc_df["upper"], mode="lines",
+            line=dict(width=0), showlegend=False, hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=fc_df["date"], y=fc_df["lower"], mode="lines", fill="tonexty",
+            fillcolor="rgba(108,92,231,0.12)", line=dict(width=0),
+            name="نطاق الثقة", hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=fc_df["date"], y=fc_df["predicted"], mode="lines",
+            name="التوقع", line=dict(color="#6c5ce7", width=2.5, dash="dash"),
+            hovertemplate="<b>%{x}</b><br>متوقع: $%{y:,.2f}<extra></extra>",
+        ))
+        fig.update_layout(title="الإيراد الفعلي مقابل المتوقع", height=420,
+                          legend=dict(orientation="h", y=-0.18), **theme)
+        fig.update_yaxes(gridcolor="rgba(0,0,0,0.04)")
+        fig.update_xaxes(gridcolor="rgba(0,0,0,0.04)")
+        st.plotly_chart(fig, use_container_width=True)
+
+    season = forecast.get("seasonality", [])
+    if season:
+        col_s1, col_s2 = st.columns([2, 1])
+        with col_s1:
+            sdf = pd.DataFrame(season)
+            fig = go.Figure(data=[go.Bar(
+                x=sdf["weekday"], y=sdf["factor"],
+                marker=dict(color="#00b894", cornerradius=8),
+                hovertemplate="<b>%{x}</b><br>معامل: %{y:.2f}<extra></extra>",
+            )])
+            fig.add_hline(y=1.0, line_dash="dot", line_color="#636e72")
+            fig.update_layout(title="الموسمية حسب يوم الأسبوع (1.0 = المتوسط)", height=320, **theme)
+            st.plotly_chart(fig, use_container_width=True)
+        with col_s2:
+            st.markdown(f"""
+            <div class="soft-card" style="margin-top:48px;">
+                <div style="font-weight:700; color:#2d3436; margin-bottom:10px;">ملخص الاتجاه</div>
+                <div style="color:#636e72; line-height:2;">
+                    الاتجاه العام: <b style="color:#6c5ce7;">{forecast.get('trend_direction','')}</b><br>
+                    أفضل يوم: <b>{forecast.get('best_day','')}</b><br>
+                    أضعف يوم: <b>{forecast.get('worst_day','')}</b>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+else:
+    st.markdown(f'<div class="soft-card">{forecast.get("note", "التوقعات غير متاحة.")}</div>', unsafe_allow_html=True)
+
+
+# ============================
+# RECOMMENDATION ENGINE
+# ============================
+recommendations = advanced.get("recommendations", {})
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">محرك التوصيات — المنتجات المشتراة معاً</div>', unsafe_allow_html=True)
+
+if recommendations.get("available"):
+    st.caption(
+        f"تم تحليل {recommendations.get('orders_analyzed', 0)} طلب — "
+        f"{recommendations.get('multi_item_orders', 0)} طلب يحتوي أكثر من منتج."
+    )
+    pairs_df = pd.DataFrame(recommendations.get("pairs", []))
+    if not pairs_df.empty:
+        rename = {
+            "product_a": "المنتج (أ)", "product_b": "المنتج (ب)", "count": "مرات التكرار",
+            "support": "الدعم", "confidence": "الثقة", "lift": "معامل الرفع",
+        }
+        st.markdown("#### أقوى ارتباطات المنتجات")
+        st.dataframe(pairs_df.rename(columns=rename), use_container_width=True, hide_index=True)
+
+    by_prod = recommendations.get("by_product", [])
+    if by_prod:
+        st.markdown("#### توصيات البيع المتقاطع لكل منتج")
+        cols = st.columns(2)
+        for i, item in enumerate(by_prod[:6]):
+            with cols[i % 2]:
+                recs = " ".join(
+                    f'<span class="col-map-item">{r["product"]} ({r["count"]})</span>'
+                    for r in item["recommendations"]
+                )
+                st.markdown(f"""
+                <div class="soft-card" style="margin-bottom:10px;">
+                    <div style="font-weight:700; color:#2d3436;">عند شراء: {item['product']}</div>
+                    <div style="color:#636e72; font-size:13px; margin:6px 0;">اقترح أيضاً:</div>
+                    {recs}
+                </div>
+                """, unsafe_allow_html=True)
+else:
+    st.markdown(f'<div class="soft-card">{recommendations.get("note", "التوصيات غير متاحة.")}</div>', unsafe_allow_html=True)
+
+
+# ============================
+# CHURN PREDICTION & RETENTION
+# ============================
+churn = advanced.get("churn_prediction", {})
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">التنبؤ بفقدان العملاء والاحتفاظ بهم</div>', unsafe_allow_html=True)
+
+if churn.get("available"):
+    summary = churn.get("summary", {})
+    k1, k2, k3 = st.columns(3)
+    with k1:
+        render_kpi("!", f"{summary.get('high_risk', 0)}", "عملاء بخطورة مرتفعة", "pink",
+                   f"{summary.get('high_risk_pct', 0)}%", "warn")
+    with k2:
+        render_kpi("$", f"${summary.get('revenue_at_risk', 0):,.0f}", "إيرادات معرضة للخطر", "orange")
+    with k3:
+        render_kpi("U", f"{summary.get('total_customers', 0)}", "إجمالي العملاء المحللين", "blue")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_c1, col_c2 = st.columns([1, 2])
+    with col_c1:
+        dist_df = pd.DataFrame(churn.get("distribution", []))
+        if not dist_df.empty:
+            fig = go.Figure(data=[go.Pie(
+                labels=dist_df["tier"], values=dist_df["customers"], hole=0.55,
+                marker=dict(colors=["#e17055", "#f39c12", "#00b894"]),
+                textinfo="label+percent",
+            )])
+            fig.update_layout(title="توزيع مستوى الخطورة", height=320, showlegend=False, **theme)
+            st.plotly_chart(fig, use_container_width=True)
+    with col_c2:
+        at_risk_df = pd.DataFrame(churn.get("at_risk_customers", []))
+        if not at_risk_df.empty:
+            rename = {
+                "customer": "العميل", "recency_days": "أيام منذ آخر طلب",
+                "avg_gap_days": "متوسط الفجوة", "orders": "الطلبات",
+                "total_spent": "إجمالي الإنفاق", "risk_score": "درجة الخطورة",
+                "risk_tier": "المستوى",
+            }
+            st.markdown("#### العملاء الأكثر عرضة للفقدان")
+            st.dataframe(at_risk_df.rename(columns=rename), use_container_width=True,
+                         hide_index=True, height=320)
+
+    tips = churn.get("retention_tips", [])
+    if tips:
+        tips_html = "".join(f"<li>{t}</li>" for t in tips)
+        st.markdown(f"""
+        <div class="tips-box">
+            <h3>توصيات الاحتفاظ بالعملاء</h3>
+            <ul>{tips_html}</ul>
+        </div>
+        """, unsafe_allow_html=True)
+else:
+    st.markdown(f'<div class="soft-card">{churn.get("note", "غير متاح.")}</div>', unsafe_allow_html=True)
+
+
+# ============================
+# INVENTORY & DEMAND SIGNALS
+# ============================
+inventory = advanced.get("inventory", {})
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">المخزون وإشارات الطلب</div>', unsafe_allow_html=True)
+
+if inventory.get("available"):
+    if inventory.get("note"):
+        st.caption(inventory["note"])
+    col_i1, col_i2 = st.columns(2)
+    with col_i1:
+        vel_df = pd.DataFrame(inventory.get("velocity", []))
+        if not vel_df.empty:
+            vdf = vel_df.sort_values("velocity", ascending=True)
+            fig = go.Figure(data=[go.Bar(
+                x=vdf["velocity"], y=vdf["product"], orientation="h",
+                marker=dict(color="#0984e3", cornerradius=6),
+                hovertemplate="<b>%{y}</b><br>سرعة البيع: %{x} وحدة/يوم<extra></extra>",
+            )])
+            fig.update_layout(title="أسرع المنتجات مبيعاً (وحدة/يوم)", height=420, **theme)
+            st.plotly_chart(fig, use_container_width=True)
+    with col_i2:
+        slow_df = pd.DataFrame(inventory.get("slow_movers", []))
+        if not slow_df.empty:
+            st.markdown("#### المنتجات بطيئة الحركة")
+            keep = [c for c in ["product", "units", "velocity", "momentum_pct"] if c in slow_df.columns]
+            rename = {"product": "المنتج", "units": "الوحدات", "velocity": "السرعة", "momentum_pct": "الزخم %"}
+            st.dataframe(slow_df[keep].rename(columns=rename), use_container_width=True,
+                         hide_index=True, height=380)
+
+    risk_df = pd.DataFrame(inventory.get("stock_risk", []))
+    if not risk_df.empty:
+        title = "مخاطر نفاد المخزون" if inventory.get("has_stock_data") else "أولويات إعادة التخزين (تقديرية)"
+        st.markdown(f"#### {title}")
+        st.dataframe(risk_df, use_container_width=True, hide_index=True)
+else:
+    st.markdown(f'<div class="soft-card">{inventory.get("note", "غير متاح.")}</div>', unsafe_allow_html=True)
+
+
+# ============================
 # AI INSIGHTS
 # ============================
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
@@ -741,3 +996,52 @@ if "ai_insights" in st.session_state:
         f'</div>',
         unsafe_allow_html=True,
     )
+
+
+# ============================
+# REPORTS & EXPORT
+# ============================
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">التقارير والتصدير</div>', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="soft-card" style="margin-bottom:14px;">
+    حمّل تقريراً شاملاً يتضمن مؤشرات الأداء، التوقعات، التوصيات، تحليل الفقدان والمخزون
+    بثلاث صيغ: CSV للملخص، Excel متعدد الأوراق، وPDF منسّق بالعربية.
+</div>
+""", unsafe_allow_html=True)
+
+ai_text_for_pdf = st.session_state.get("ai_insights", {}).get("insights_text")
+base_name = os.path.splitext(st.session_state.get("filename", "report"))[0]
+
+e1, e2, e3 = st.columns(3)
+with e1:
+    st.download_button(
+        "تحميل CSV (ملخص المؤشرات)",
+        data=export_csv(analytics),
+        file_name=f"{base_name}_kpis.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
+with e2:
+    st.download_button(
+        "تحميل Excel (تقرير كامل)",
+        data=export_excel(analytics, advanced),
+        file_name=f"{base_name}_report.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        use_container_width=True,
+    )
+with e3:
+    @st.cache_data(show_spinner=False)
+    def _build_pdf(_analytics, _advanced, _ai):
+        return export_pdf(_analytics, _advanced, _ai)
+
+    st.download_button(
+        "تحميل PDF (تقرير عربي)",
+        data=_build_pdf(analytics, advanced, ai_text_for_pdf),
+        file_name=f"{base_name}_report.pdf",
+        mime="application/pdf",
+        use_container_width=True,
+        type="primary",
+    )
+st.caption("PDF يتضمن توصيات الذكاء الاصطناعي إذا تم توليدها أعلاه.")
