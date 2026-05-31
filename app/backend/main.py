@@ -11,10 +11,14 @@ from typing import Optional
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
-from app.backend.analytics import validate_csv, compute_analytics, generate_summary_text
+from app.backend.analytics import (
+    validate_csv, compute_analytics, generate_summary_text, read_file,
+)
+from app.backend.advanced import compute_advanced
+from app.backend.reports import export_csv, export_excel, export_pdf
 from app.backend.ai import generate_insights
 
 load_dotenv()
@@ -191,6 +195,82 @@ async def get_insights(file: UploadFile = File(...), upload_id: Optional[str] = 
             logger.error(f"Failed to cache insights: {e}")
 
     return result
+
+
+def _read_upload(content: bytes, filename: str) -> pd.DataFrame:
+    """Parse an uploaded CSV/Excel file, raising HTTP 400 on failure."""
+    try:
+        return read_file(content, filename)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse file: {str(e)}")
+
+
+@app.post("/advanced")
+async def advanced_analysis(file: UploadFile = File(...)):
+    """
+    Predictive / prescriptive analytics: forecasting, recommendations,
+    anomaly detection, churn prediction and inventory signals.
+    """
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large.")
+
+    df = _read_upload(content, file.filename)
+    validation = validate_csv(df)
+    if not validation["valid"]:
+        raise HTTPException(status_code=400, detail=validation["message"])
+
+    analytics = compute_analytics(df)
+    advanced = compute_advanced(df, churn_rate=analytics["kpis"].get("churn_rate", 0))
+    return {"analytics": analytics, "advanced": advanced}
+
+
+@app.post("/report")
+async def build_report(file: UploadFile = File(...), format: str = "pdf", include_ai: bool = True):
+    """
+    Generate a downloadable report. `format` is one of: csv | excel | pdf.
+    """
+    fmt = format.lower()
+    if fmt not in {"csv", "excel", "xlsx", "pdf"}:
+        raise HTTPException(status_code=400, detail="format must be csv, excel or pdf.")
+
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large.")
+
+    df = _read_upload(content, file.filename)
+    validation = validate_csv(df)
+    if not validation["valid"]:
+        raise HTTPException(status_code=400, detail=validation["message"])
+
+    analytics = compute_analytics(df)
+    advanced = compute_advanced(df, churn_rate=analytics["kpis"].get("churn_rate", 0))
+
+    if fmt == "csv":
+        data = export_csv(analytics)
+        return Response(
+            content=data, media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=report.csv"},
+        )
+    if fmt in {"excel", "xlsx"}:
+        data = export_excel(analytics, advanced)
+        return Response(
+            content=data,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=report.xlsx"},
+        )
+
+    ai_text = None
+    if include_ai:
+        try:
+            ai_text = generate_insights(analytics, generate_summary_text(analytics))["insights_text"]
+        except Exception as e:
+            logger.error(f"AI insights for report failed: {e}")
+    data = export_pdf(analytics, advanced, ai_text)
+    return Response(
+        content=data, media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=report.pdf"},
+    )
 
 
 if __name__ == "__main__":

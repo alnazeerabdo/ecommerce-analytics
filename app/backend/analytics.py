@@ -179,6 +179,41 @@ def read_file(file_content: bytes, filename: str) -> pd.DataFrame:
             return pd.read_excel(io.BytesIO(file_content), engine="openpyxl")
 
 
+def validate_csv(df: pd.DataFrame) -> dict:
+    """
+    Lightweight validation for uploaded data.
+    The engine auto-detects columns, so we only require a non-empty table
+    with at least one usable numeric/price or date signal.
+    """
+    if df is None or df.empty:
+        return {"valid": False, "message": "الملف فارغ أو لا يحتوي على بيانات."}
+
+    if len(df.columns) < 2:
+        return {"valid": False, "message": "يجب أن يحتوي الملف على عمودين على الأقل."}
+
+    col_map = detect_columns(df)
+    has_value = bool(col_map.get("total_price") or col_map.get("unit_price"))
+    has_dimension = bool(
+        col_map.get("date") or col_map.get("product")
+        or col_map.get("category") or col_map.get("customer_id")
+        or col_map.get("customer_name")
+    )
+
+    if not has_value and not has_dimension:
+        return {
+            "valid": False,
+            "message": "تعذّر اكتشاف أعمدة المبلغ أو المنتج أو التاريخ. تحقق من تنسيق الملف.",
+        }
+
+    detected = {k: v for k, v in col_map.items() if v and k != "_compute_total"}
+    return {
+        "valid": True,
+        "message": "تم التحقق من الملف بنجاح.",
+        "row_count": int(len(df)),
+        "detected_columns": detected,
+    }
+
+
 def compute_analytics(df: pd.DataFrame) -> dict:
     """
     Run analytics on any e-commerce DataFrame.
@@ -376,7 +411,9 @@ def compute_analytics(df: pd.DataFrame) -> dict:
             cust_agg["last_order"] = (date_col, "max")
             cust_agg["first_order"] = (date_col, "min")
 
-        customer_stats = df.groupby(customer_col).agg(**cust_agg).round(2)
+        customer_stats = df.groupby(customer_col).agg(**cust_agg)
+        if "total_spent" in customer_stats.columns:
+            customer_stats["total_spent"] = customer_stats["total_spent"].round(2)
 
         top_cust = customer_stats.sort_values("total_spent", ascending=False).head(10).reset_index()
 
