@@ -411,7 +411,9 @@ def compute_analytics(df: pd.DataFrame) -> dict:
             cust_agg["last_order"] = (date_col, "max")
             cust_agg["first_order"] = (date_col, "min")
 
-        customer_stats = df.groupby(customer_col).agg(**cust_agg).round(2)
+        customer_stats = df.groupby(customer_col).agg(**cust_agg)
+        if "total_spent" in customer_stats.columns:
+            customer_stats["total_spent"] = customer_stats["total_spent"].round(2)
 
         top_cust = customer_stats.sort_values("total_spent", ascending=False).head(10).reset_index()
 
