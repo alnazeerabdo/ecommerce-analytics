@@ -33,7 +33,7 @@ st.markdown("""
     * { font-family: 'Tajawal', sans-serif !important; }
 
     .stApp {
-        background: linear-gradient(135deg, #f8f9fe 0%, #eef1f8 50%, #f0f4ff 100%);
+        background: linear-gradient(135deg, #fffdf5 0%, #fef6e0 50%, #e8f1ff 100%);
         direction: rtl;
     }
 
@@ -85,12 +85,12 @@ st.markdown("""
         font-weight: 700;
         color: #fff;
     }
-    .fi-purple { background: #6c5ce7; }
-    .fi-blue { background: #0984e3; }
-    .fi-green { background: #00b894; }
-    .fi-pink { background: #e17055; }
-    .fi-teal { background: #00cec9; }
-    .fi-orange { background: #f39c12; }
+    .fi-purple { background: #2563eb; }
+    .fi-blue { background: #0ea5e9; }
+    .fi-green { background: #0d9488; }
+    .fi-pink { background: #ef4444; }
+    .fi-teal { background: #06b6d4; }
+    .fi-orange { background: #f5b400; }
 
     /* KPI Cards */
     .kpi-card {
@@ -111,12 +111,12 @@ st.markdown("""
         height: 4px;
         border-radius: 20px 20px 0 0;
     }
-    .kpi-card.purple::before { background: linear-gradient(90deg, #6c5ce7, #a29bfe); }
-    .kpi-card.blue::before { background: linear-gradient(90deg, #0984e3, #74b9ff); }
-    .kpi-card.green::before { background: linear-gradient(90deg, #00b894, #55efc4); }
-    .kpi-card.pink::before { background: linear-gradient(90deg, #e17055, #fab1a0); }
-    .kpi-card.teal::before { background: linear-gradient(90deg, #00cec9, #81ecec); }
-    .kpi-card.orange::before { background: linear-gradient(90deg, #f39c12, #ffeaa7); }
+    .kpi-card.purple::before { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+    .kpi-card.blue::before { background: linear-gradient(90deg, #0ea5e9, #7dd3fc); }
+    .kpi-card.green::before { background: linear-gradient(90deg, #0d9488, #5eead4); }
+    .kpi-card.pink::before { background: linear-gradient(90deg, #ef4444, #fca5a5); }
+    .kpi-card.teal::before { background: linear-gradient(90deg, #06b6d4, #a5f3fc); }
+    .kpi-card.orange::before { background: linear-gradient(90deg, #f5b400, #fde68a); }
     .kpi-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 30px rgba(0,0,0,0.08);
@@ -141,8 +141,8 @@ st.markdown("""
         border-radius: 20px;
         display: inline-block;
     }
-    .badge-good { color: #00b894; background: rgba(0,184,148,0.1); }
-    .badge-warn { color: #e17055; background: rgba(225,112,85,0.1); }
+    .badge-good { color: #0d9488; background: rgba(13,148,136,0.1); }
+    .badge-warn { color: #ef4444; background: rgba(239,68,68,0.1); }
 
     /* Section Headers */
     .section-title {
@@ -158,7 +158,7 @@ st.markdown("""
         content: '';
         flex: 1;
         height: 2px;
-        background: linear-gradient(90deg, rgba(108,92,231,0.3), transparent);
+        background: linear-gradient(90deg, rgba(37,99,235,0.3), transparent);
         border-radius: 2px;
     }
     .soft-card {
@@ -186,7 +186,7 @@ st.markdown("""
         position: absolute;
         top: 0; left: 0; right: 0;
         height: 5px;
-        background: linear-gradient(90deg, #6c5ce7, #0984e3, #00b894, #f39c12);
+        background: linear-gradient(90deg, #2563eb 0%, #3b82f6 45%, #f5b400 100%);
     }
     .hero h1 {
         font-size: 38px;
@@ -198,13 +198,13 @@ st.markdown("""
 
     /* Tips Box */
     .tips-box {
-        background: linear-gradient(135deg, #dfe6e9, #f0f4ff);
+        background: linear-gradient(135deg, #fef3c7, #e8f1ff);
         border-radius: 16px;
         padding: 24px;
-        border-right: 4px solid #6c5ce7;
+        border-right: 4px solid #2563eb;
         margin: 16px 0;
     }
-    .tips-box h3 { color: #6c5ce7; margin-bottom: 12px; font-size: 18px; }
+    .tips-box h3 { color: #2563eb; margin-bottom: 12px; font-size: 18px; }
     .tips-box ul { color: #2d3436; line-height: 2; padding-right: 20px; }
 
     /* AI Panel */
@@ -212,8 +212,8 @@ st.markdown("""
         background: #ffffff;
         border-radius: 20px;
         padding: 28px;
-        border: 1px solid rgba(108,92,231,0.15);
-        box-shadow: 0 4px 24px rgba(108,92,231,0.06);
+        border: 1px solid rgba(37,99,235,0.15);
+        box-shadow: 0 4px 24px rgba(37,99,235,0.06);
         position: relative;
         overflow: hidden;
     }
@@ -222,13 +222,13 @@ st.markdown("""
         position: absolute;
         top: 0; left: 0; right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #6c5ce7, #0984e3, #00b894);
+        background: linear-gradient(90deg, #2563eb, #f5b400);
     }
     .ai-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         color: white;
         padding: 6px 16px;
         border-radius: 20px;
@@ -257,8 +257,8 @@ st.markdown("""
         background: #ffffff;
         border-radius: 20px;
         padding: 22px;
-        border: 1px solid rgba(108,92,231,0.12);
-        box-shadow: 0 4px 24px rgba(108,92,231,0.06);
+        border: 1px solid rgba(37,99,235,0.12);
+        box-shadow: 0 4px 24px rgba(37,99,235,0.06);
         margin-bottom: 16px;
     }
 
@@ -309,14 +309,14 @@ st.markdown("""
     /* Divider */
     .divider {
         height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(108,92,231,0.15), transparent);
+        background: linear-gradient(90deg, transparent, rgba(37,99,235,0.15), transparent);
         margin: 28px 0;
         border-radius: 2px;
     }
 
     /* Columns mapping */
     .col-map {
-        background: #f8f9fe;
+        background: #fffdf5;
         border-radius: 12px;
         padding: 16px;
         border: 1px solid rgba(0,0,0,0.05);
@@ -329,9 +329,71 @@ st.markdown("""
         border-radius: 20px;
         margin: 4px;
         font-size: 13px;
-        border: 1px solid rgba(108,92,231,0.2);
-        color: #6c5ce7;
+        border: 1px solid rgba(37,99,235,0.2);
+        color: #2563eb;
         font-weight: 600;
+    }
+
+    /* === Buttons (primary = blue) === */
+    .stButton > button, .stDownloadButton > button {
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        border: 1px solid rgba(37,99,235,0.25) !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton > button[kind="primary"],
+    .stDownloadButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 6px 16px rgba(37,99,235,0.25) !important;
+    }
+    .stButton > button[kind="primary"]:hover,
+    .stDownloadButton > button[kind="primary"]:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 22px rgba(37,99,235,0.32) !important;
+    }
+    .stButton > button[kind="secondary"],
+    .stDownloadButton > button[kind="secondary"] {
+        background: #ffffff !important;
+        color: #1d4ed8 !important;
+    }
+    .stButton > button[kind="secondary"]:hover,
+    .stDownloadButton > button[kind="secondary"]:hover {
+        background: #fffbeb !important;
+        border-color: #f5b400 !important;
+        color: #b45309 !important;
+    }
+
+    /* === File uploader === */
+    [data-testid="stFileUploaderDropzone"] {
+        background: #fffdf5 !important;
+        border: 2px dashed rgba(37,99,235,0.35) !important;
+        border-radius: 16px !important;
+    }
+    [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #f5b400 !important;
+        background: #fffbeb !important;
+    }
+
+    /* === Tables / dataframes === */
+    [data-testid="stDataFrame"] {
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(0,0,0,0.06) !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
+    }
+
+    /* === Alerts (st.info etc.) === */
+    [data-testid="stNotification"], .stAlert {
+        border-radius: 14px !important;
+    }
+
+    /* Markdown sub-headings */
+    .block-container h4 {
+        color: #1e293b;
+        font-weight: 800;
+        margin-top: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -401,7 +463,7 @@ st.markdown("""
     <h3>نصائح للحصول على أفضل نتائج</h3>
     <ul>
         <li>أضف عمود <b>التاريخ</b> لعرض الاتجاهات الشهرية</li>
-        <li>أضف عمود <b>المنتج</b> لمعرفة الأ��ثر مبيعاً</li>
+        <li>أضف عمود <b>المنتج</b> لمعرفة الأكثر مبيعاً</li>
         <li>أضف عمود <b>السعر/المبلغ</b> لحساب الإيرادات</li>
         <li>أضف عمود <b>العميل</b> لتحليل الولاء</li>
         <li>أضف عمود <b>التصنيف</b> لتحليل الفئات</li>
@@ -485,7 +547,7 @@ advanced = _cached_advanced(df, kpis.get("churn_rate", 0))
 filename = st.session_state.get("filename", "ملف")
 st.markdown(f"""
 <div class="hero" style="padding: 24px 40px;">
-    <h1>لوحة تحلي��ات المبيعات</h1>
+    <h1>لوحة تحليلات المبيعات</h1>
     <p>تحليل <strong>{filename}</strong> — {kpis['total_orders']} طلب • {analytics['date_range']['start']} إلى {analytics['date_range']['end']}</p>
 </div>
 """, unsafe_allow_html=True)
@@ -559,9 +621,9 @@ with col_l:
         fig.add_trace(go.Scatter(
             x=monthly_df["month"], y=monthly_df["revenue"],
             mode="lines+markers", fill="tozeroy",
-            line=dict(color="#6c5ce7", width=3),
-            fillcolor="rgba(108,92,231,0.08)",
-            marker=dict(size=8, color="#6c5ce7"),
+            line=dict(color="#2563eb", width=3),
+            fillcolor="rgba(37,99,235,0.08)",
+            marker=dict(size=8, color="#2563eb"),
             hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
         ))
         fig.update_layout(title="اتجاه الإيرادات الشهرية", height=400, **theme)
@@ -574,7 +636,7 @@ with col_l:
 with col_r:
     cat_df = pd.DataFrame(analytics["category_breakdown"])
     if not cat_df.empty:
-        colors = ["#6c5ce7", "#0984e3", "#00b894", "#e17055", "#f39c12", "#fd79a8"]
+        colors = ["#2563eb", "#0ea5e9", "#0d9488", "#ef4444", "#f5b400", "#fd79a8"]
         fig = go.Figure(data=[go.Pie(
             labels=cat_df["category"], values=cat_df["revenue"],
             hole=0.55, marker=dict(colors=colors[:len(cat_df)]),
@@ -602,7 +664,7 @@ with col_l2:
             orientation="h",
             marker=dict(
                 color=prod_df["revenue"],
-                colorscale=[[0, "#a29bfe"], [0.5, "#6c5ce7"], [1, "#0984e3"]],
+                colorscale=[[0, "#60a5fa"], [0.5, "#2563eb"], [1, "#0ea5e9"]],
                 cornerradius=6,
             ),
             hovertemplate="<b>%{y}</b><br>الإيراد: $%{x:,.2f}<extra></extra>",
@@ -620,7 +682,7 @@ with col_r2:
         fig = go.Figure(data=[go.Bar(
             x=region_df["region"], y=region_df["revenue"],
             marker=dict(
-                color=["#6c5ce7", "#0984e3", "#00b894", "#e17055", "#f39c12"][:len(region_df)],
+                color=["#2563eb", "#0ea5e9", "#0d9488", "#ef4444", "#f5b400"][:len(region_df)],
                 cornerradius=8,
             ),
             hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
@@ -666,7 +728,7 @@ with a1:
     if not src_df.empty:
         fig = go.Figure(data=[go.Bar(
             x=src_df["source"], y=src_df["revenue"],
-            marker=dict(color="#6c5ce7", cornerradius=8),
+            marker=dict(color="#2563eb", cornerradius=8),
             hovertemplate="<b>%{x}</b><br>الإيراد: $%{y:,.2f}<extra></extra>",
         )])
         fig.update_layout(title="الأداء حسب مصدر الزيارات", height=360, **theme)
@@ -679,7 +741,7 @@ with a2:
     if not seg_df.empty:
         fig = go.Figure(data=[go.Pie(
             labels=seg_df["segment"], values=seg_df["customers"], hole=0.5,
-            marker=dict(colors=["#00b894", "#0984e3", "#e17055"]),
+            marker=dict(colors=["#0d9488", "#0ea5e9", "#ef4444"]),
             textinfo="label+percent",
         )])
         fig.update_layout(title="توزيع شرائح العملاء (RFM-lite)", height=360, showlegend=False, **theme)
@@ -725,9 +787,9 @@ if alerts:
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-title">التنبيهات الذكية</div>', unsafe_allow_html=True)
     alert_styles = {
-        "critical": ("#e17055", "rgba(225,112,85,0.08)", "خطر"),
-        "warning": ("#f39c12", "rgba(243,156,18,0.08)", "تحذير"),
-        "ok": ("#00b894", "rgba(0,184,148,0.08)", "سليم"),
+        "critical": ("#ef4444", "rgba(239,68,68,0.08)", "خطر"),
+        "warning": ("#f5b400", "rgba(243,156,18,0.08)", "تحذير"),
+        "ok": ("#0d9488", "rgba(13,148,136,0.08)", "سليم"),
     }
     for al in alerts:
         color, bg, tag = alert_styles.get(al["level"], alert_styles["ok"])
@@ -773,7 +835,7 @@ if forecast.get("available"):
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=hist_df["date"], y=hist_df["revenue"], mode="lines",
-            name="الإيراد الفعلي", line=dict(color="#0984e3", width=2.5),
+            name="الإيراد الفعلي", line=dict(color="#0ea5e9", width=2.5),
             hovertemplate="<b>%{x}</b><br>فعلي: $%{y:,.2f}<extra></extra>",
         ))
         fig.add_trace(go.Scatter(
@@ -782,12 +844,12 @@ if forecast.get("available"):
         ))
         fig.add_trace(go.Scatter(
             x=fc_df["date"], y=fc_df["lower"], mode="lines", fill="tonexty",
-            fillcolor="rgba(108,92,231,0.12)", line=dict(width=0),
+            fillcolor="rgba(37,99,235,0.12)", line=dict(width=0),
             name="نطاق الثقة", hoverinfo="skip",
         ))
         fig.add_trace(go.Scatter(
             x=fc_df["date"], y=fc_df["predicted"], mode="lines",
-            name="التوقع", line=dict(color="#6c5ce7", width=2.5, dash="dash"),
+            name="التوقع", line=dict(color="#2563eb", width=2.5, dash="dash"),
             hovertemplate="<b>%{x}</b><br>متوقع: $%{y:,.2f}<extra></extra>",
         ))
         fig.update_layout(title="الإيراد الفعلي مقابل المتوقع", height=420,
@@ -803,7 +865,7 @@ if forecast.get("available"):
             sdf = pd.DataFrame(season)
             fig = go.Figure(data=[go.Bar(
                 x=sdf["weekday"], y=sdf["factor"],
-                marker=dict(color="#00b894", cornerradius=8),
+                marker=dict(color="#0d9488", cornerradius=8),
                 hovertemplate="<b>%{x}</b><br>معامل: %{y:.2f}<extra></extra>",
             )])
             fig.add_hline(y=1.0, line_dash="dot", line_color="#636e72")
@@ -814,7 +876,7 @@ if forecast.get("available"):
             <div class="soft-card" style="margin-top:48px;">
                 <div style="font-weight:700; color:#2d3436; margin-bottom:10px;">ملخص الاتجاه</div>
                 <div style="color:#636e72; line-height:2;">
-                    الاتجاه العام: <b style="color:#6c5ce7;">{forecast.get('trend_direction','')}</b><br>
+                    الاتجاه العام: <b style="color:#2563eb;">{forecast.get('trend_direction','')}</b><br>
                     أفضل يوم: <b>{forecast.get('best_day','')}</b><br>
                     أضعف يوم: <b>{forecast.get('worst_day','')}</b>
                 </div>
@@ -891,7 +953,7 @@ if churn.get("available"):
         if not dist_df.empty:
             fig = go.Figure(data=[go.Pie(
                 labels=dist_df["tier"], values=dist_df["customers"], hole=0.55,
-                marker=dict(colors=["#e17055", "#f39c12", "#00b894"]),
+                marker=dict(colors=["#ef4444", "#f5b400", "#0d9488"]),
                 textinfo="label+percent",
             )])
             fig.update_layout(title="توزيع مستوى الخطورة", height=320, showlegend=False, **theme)
@@ -939,7 +1001,7 @@ if inventory.get("available"):
             vdf = vel_df.sort_values("velocity", ascending=True)
             fig = go.Figure(data=[go.Bar(
                 x=vdf["velocity"], y=vdf["product"], orientation="h",
-                marker=dict(color="#0984e3", cornerradius=6),
+                marker=dict(color="#0ea5e9", cornerradius=6),
                 hovertemplate="<b>%{y}</b><br>سرعة البيع: %{x} وحدة/يوم<extra></extra>",
             )])
             fig.update_layout(title="أسرع المنتجات مبيعاً (وحدة/يوم)", height=420, **theme)
